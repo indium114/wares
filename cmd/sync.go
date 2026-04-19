@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
@@ -14,6 +15,14 @@ var syncCmd = &cobra.Command{
 		err := internal.Sync()
 		if err != nil {
 			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
+			return err
+		}
+
+		fmt.Printf("%s Marking all files in ~/Wares as executable\n", internal.LogText)
+		command := exec.Command("chmod", "+x", "~/Wares/*")
+		err = command.Run()
+		if err != nil {
+			fmt.Printf("%s Failed to mark files as executable: %s", internal.ErrText, err)
 			return err
 		}
 

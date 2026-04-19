@@ -10,5 +10,5 @@ var (
 	ErrText    string = color.RedString("[ERROR]")
 	SyncText   string = color.BlueString("[SYNC]")
 	UpdateText string = color.MagentaString("[UPDATE]")
-	DebugText  string = color.HiBlackString("[DEBUG]")
+	LogText    string = color.HiBlackString("[LOG]")
 )
