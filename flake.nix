@@ -20,6 +20,7 @@
             gotools
             delve
             just
+            goreleaser
           ];
         };
 
