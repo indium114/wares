@@ -78,10 +78,13 @@ func Sync() error {
 			changed = true
 		}
 
+		if err := CleanDir(w.Repo, l.Version); err != nil {
+			return err
+		}
+
 		// Download
 		if err := Download(w.Repo, l.Version, w.Asset); err != nil {
-			fmt.Printf("%s Repo: %s, Version: %s, Asset: %s", ErrText, w.Repo, l.Version, w.Asset)
-			return fmt.Errorf("%s: download: %w", name, err)
+			return err
 		}
 
 		// Resolve installed file path
