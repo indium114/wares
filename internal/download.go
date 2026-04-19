@@ -78,6 +78,7 @@ func Download(repo, release, pattern string) error {
 		return err
 	}
 	command := exec.Command("gh", "release", "download", "--repo", repo, "--pattern", pattern, "--dir", dir, release)
+	command.Stdout = os.Stdout
 	err = command.Run()
 	if err != nil {
 		return err
