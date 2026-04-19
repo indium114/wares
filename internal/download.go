@@ -42,7 +42,7 @@ func EnsureStoreDir(repo, version string) (string, error) {
 }
 
 func GetReleases(repo string) ([]Release, error) {
-	out, err := exec.Command("gh", "release", "list", "--repo", repo, "--json", "name, isLatest").Output()
+	out, err := exec.Command("gh", "release", "list", "--repo", repo, "--json", "name,isLatest").Output()
 	if err != nil {
 		return nil, err
 	}

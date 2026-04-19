@@ -128,7 +128,7 @@ func SaveLock(lock *Lockfile) error {
 		return err
 	}
 
-	path := filepath.Join(dir, "pallets.lock")
+	path := filepath.Join(dir, "pallet.lock")
 	tmp := path + ".tmp"
 
 	// ensure maps are not nil (prevents ugly YAML output)

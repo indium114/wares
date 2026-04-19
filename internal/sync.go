@@ -57,7 +57,7 @@ func Sync() error {
 	changed := false
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("[sync] %s\n", name)
+		fmt.Printf("%s %s\n", SyncText, name)
 
 		l, ok := lock.Wares[name]
 
@@ -65,7 +65,7 @@ func Sync() error {
 		if !ok || l.Version == "" {
 			rel, err := GetLatest(w.Repo)
 			if err != nil {
-				return fmt.Errorf("%s: latest release: %w", name, err)
+				return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
 			}
 
 			l = LockedWare{
@@ -80,6 +80,7 @@ func Sync() error {
 
 		// Download
 		if err := Download(w.Repo, l.Version, w.Asset); err != nil {
+			fmt.Printf("%s Repo: %s, Version: %s, Asset: %s", ErrText, w.Repo, l.Version, w.Asset)
 			return fmt.Errorf("%s: download: %w", name, err)
 		}
 
