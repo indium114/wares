@@ -28,7 +28,7 @@ func ResolveDownloadedPath(repo, version, pattern string) (string, error) {
 	}
 
 	if len(files) == 0 {
-		fmt.Println("%s No downloaded artifact in %s", ErrText, dir)
+		fmt.Printf("%s No downloaded artifact in %s\n", ErrText, dir)
 		return "", err
 	}
 
@@ -41,6 +41,55 @@ func ResolveDownloadedPath(repo, version, pattern string) (string, error) {
 	}
 
 	return filepath.Join(dir, files[0].Name()), nil
+}
+
+func findOrphans() []string {
+	cfg, err := LoadConfig()
+	lock, err := LoadLock()
+	if err != nil {
+		return []string{}
+	}
+
+	var orphans []string
+
+	for name := range lock.Wares {
+		if _, ok := cfg.Wares[name]; !ok {
+			orphans = append(orphans, name)
+		}
+	}
+
+	return orphans
+}
+func UninstallOrphans() error {
+	lock, err := LoadLock()
+	if err != nil {
+		return err
+	}
+
+	orphans := findOrphans()
+
+	for _, name := range orphans {
+		fmt.Printf("%s Removing %s\n", SyncText, name)
+
+		l := lock.Wares[name]
+
+		// remove symlink
+		if err := removeLink(name); err != nil {
+			return err
+		}
+
+		// remove stored files
+		if err := RemoveStore(l.Repo); err != nil {
+			return err
+		}
+
+		//  remove from lockfile
+		delete(lock.Wares, name)
+
+		SaveLock(lock)
+	}
+
+	return nil
 }
 
 func Sync() error {
@@ -57,7 +106,7 @@ func Sync() error {
 	changed := false
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s %s\n", SyncText, name)
+		fmt.Printf("%s Installing %s\n", SyncText, name)
 
 		l, ok := lock.Wares[name]
 
@@ -69,6 +118,7 @@ func Sync() error {
 			}
 
 			l = LockedWare{
+				Repo:    w.Repo,
 				Version: rel,
 				Asset:   "", // will be filled after download
 				Digest:  "",
@@ -116,6 +166,9 @@ func Sync() error {
 		if err := LinkWare(name, w.Repo, l.Version, l.Asset); err != nil {
 			return fmt.Errorf("%s: link: %w", name, err)
 		}
+
+		// Remove orphaned packages
+		UninstallOrphans()
 	}
 
 	// Persist lockfile if modified

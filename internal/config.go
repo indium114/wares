@@ -25,6 +25,7 @@ type Lockfile struct {
 }
 
 type LockedWare struct {
+	Repo    string `yaml:"repo"`
 	Version string `yaml:"version"`
 	Asset   string `yaml:"asset"`
 	Digest  string `yaml:"digest"`

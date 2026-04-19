@@ -41,6 +41,20 @@ func EnsureStoreDir(repo, version string) (string, error) {
 	return dir, nil
 }
 
+func BaseStoreDir() (string, error) {
+	// Resolve base dir
+	base := os.Getenv("WARES_HOME")
+	if base == "" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		base = filepath.Join(home, ".local", "share", "wares")
+	}
+
+	return base, nil
+}
+
 func GetReleases(repo string) ([]Release, error) {
 	out, err := exec.Command("gh", "release", "list", "--repo", repo, "--json", "name,isLatest").Output()
 	if err != nil {
