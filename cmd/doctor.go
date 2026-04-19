@@ -76,7 +76,7 @@ var doctorCmd = &cobra.Command{
 		fmt.Printf("%s %s is in PATH\n", internal.OkText, waresBin)
 
 		// MARK: Check for Wares config directory
-		waresConfig := filepath.Join(home, ".config", "wares")
+		waresConfig, _ := internal.ConfigDir()
 		if _, err := os.Stat(waresConfig); os.IsNotExist(err) {
 			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, waresConfig)
 		}
