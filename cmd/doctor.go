@@ -75,6 +75,18 @@ var doctorCmd = &cobra.Command{
 		}
 		fmt.Printf("%s %s is in PATH\n", internal.OkText, waresBin)
 
+		// MARK: Check for Wares config directory
+		waresConfig := filepath.Join(home, ".config", "wares")
+		if _, err := os.Stat(waresConfig); os.IsNotExist(err) {
+			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, waresConfig)
+		}
+		err = os.MkdirAll(waresConfig, 0o755)
+		if err != nil {
+			fmt.Printf("%s Failed to create wares config dir: %s\n", internal.ErrText, err)
+			return err
+		}
+		fmt.Printf("%s %s exists\n", internal.OkText, waresConfig)
+
 		// MARK: Check for authenticated gh CLI
 		if status := checkGhCli(); status == true {
 			fmt.Printf("%s Logged into GitHub CLI", internal.OkText)
