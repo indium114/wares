@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os/exec"
+	"os"
+	"path/filepath"
 
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
@@ -19,8 +20,19 @@ var syncCmd = &cobra.Command{
 		}
 
 		fmt.Printf("%s Marking all files in ~/Wares as executable\n", internal.LogText)
-		command := exec.Command("chmod", "+x", "~/Wares/*")
-		err = command.Run()
+		err = filepath.Walk(os.ExpandEnv("$HOME/Wares"), func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if !info.IsDir() {
+				mode := info.Mode()
+				return os.Chmod(path, mode|0111)
+			}
+
+			return nil
+		})
+
 		if err != nil {
 			fmt.Printf("%s Failed to mark files as executable: %s", internal.ErrText, err)
 			return err
