@@ -83,7 +83,6 @@ var doctorCmd = &cobra.Command{
 		err = os.MkdirAll(waresConfig, 0o755)
 		if err != nil {
 			fmt.Printf("%s Failed to create wares config dir: %s\n", internal.ErrText, err)
-			return err
 		}
 		fmt.Printf("%s %s exists\n", internal.OkText, waresConfig)
 
