@@ -2,7 +2,6 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,7 +10,7 @@ import (
 
 type Release struct {
 	IsLatest bool   `json:"isLatest"`
-	Name     string `json:"name"`
+	Name     string `json:"tagName"`
 }
 
 func EnsureStoreDir(repo, version string) (string, error) {
