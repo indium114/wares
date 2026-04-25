@@ -162,8 +162,21 @@ func Sync() error {
 			}
 		}
 
+		// Extract if .tar.gz
+		if IsArchive(path) {
+			if err := Extract(path, filepath.Dir(path)); err != nil {
+				return err
+			}
+		}
+
 		// Symlink
-		if err := LinkWare(name, w.Repo, l.Version, l.Asset); err != nil {
+		var linkSource string
+		if IsArchive(path) {
+			linkSource = name
+		} else {
+			linkSource = l.Asset
+		}
+		if err := LinkWare(name, w.Repo, l.Version, linkSource); err != nil {
 			return fmt.Errorf("%s: link: %w", name, err)
 		}
 
