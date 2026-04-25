@@ -8,3 +8,4 @@
   - [x] Symlink into ~/Wares without .AppImage extension or anything other than the program name
     - e.g. `foo-x86_64-linux-v0.0.AppImage` -> `foo`
 - [ ] Detect if artifacts are `.tar.*`, and extract them if so
+- [ ] Fix issue where symlinking fails if any part of path has spaces
