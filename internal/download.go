@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -56,7 +57,7 @@ func BaseStoreDir() (string, error) {
 }
 
 func GetReleases(repo string) ([]Release, error) {
-	out, err := exec.Command("gh", "release", "list", "--repo", repo, "--json", "name,isLatest").Output()
+	out, err := exec.Command("gh", "release", "list", "--repo", repo, "--json", "tagName,isLatest").Output()
 	if err != nil {
 		return nil, err
 	}
@@ -91,8 +92,10 @@ func Download(repo, release, pattern string) error {
 	if err != nil {
 		return err
 	}
-	command := exec.Command("gh", "release", "download", "--repo", repo, "--pattern", pattern, "--dir", dir, release)
+
+	command := exec.Command("gh", "release", "download", "--repo", repo, "--pattern", pattern, "--dir", dir, release, "--clobber")
 	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
 	err = command.Run()
 	if err != nil {
 		return err
