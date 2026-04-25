@@ -40,15 +40,34 @@ Then, run `/path/to/wares sync` to download Wares, and it will now manage itself
 
 To install a package, add it to the `wares` section of `wares.yaml`.
 
-For example, here's me installing [Helix](https://github.com/helix-editor/helix) using Wares
+
+#### Installing an AppImage
+
+For example, here's me installing [Helix](https://github.com/helix-editor/helix) using wares
 
 ```yaml
 wares:
-  hx: # This will be the name of the resulting binary
-    name: hx                 # Doesn't currently do anything
+  hx:
+    name: hx                 # Name of the program
     repo: helix-editor/helix # GitHub repo (without github.com)
     asset: "*.AppImage"      # Pattern which will match the downloaded asset you would like
                                # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
+```
+
+
+#### Installing an Archive
+
+Installing an Archive (.tar.gz) is the same as installing as installing an AppImage.
+
+In this example, I'll be installing [Lazygit](https://github.com/jesseduffield/lazygit), which is packaged in `.tar.gz` format
+
+```yaml
+wares:
+  lazygit:
+    name: lazygit                          # Name of the executable file inside .tar.gz archive that you want to use
+    repo: jesseduffield/lazygit            # GitHub repo (without github.com)
+    asset: "lazygit_*_linux_x86_64.tar.gz" # Pattern which will match the downloaded asset you would like
+                                             # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
 
 ### Updating packages
