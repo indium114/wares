@@ -17,7 +17,7 @@ type Config struct {
 type Ware struct {
 	Repo  string `yaml:"repo"`
 	Asset string `yaml:"asset"`
-	Name  string `yaml:"tagName"`
+	Name  string `yaml:"name"`
 }
 
 type Lockfile struct {
