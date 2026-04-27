@@ -15,10 +15,11 @@ type Config struct {
 }
 
 type Ware struct {
-	Repo     string `yaml:"repo"`
-	Asset    string `yaml:"asset"`
-	Name     string `yaml:"name"`
-	Multiple bool   `yaml:"multiple"`
+	Repo           string `yaml:"repo"`
+	Asset          string `yaml:"asset"`
+	Name           string `yaml:"name"`
+	Multiple       bool   `yaml:"multiple"`
+	RemoveTopLevel bool   `yaml:"removetoplevel"`
 }
 
 type Lockfile struct {

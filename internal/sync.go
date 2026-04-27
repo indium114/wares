@@ -170,7 +170,7 @@ func Sync() error {
 
 		// Extract if .tar.gz
 		if IsArchive(path) {
-			if err := Extract(path, filepath.Dir(path)); err != nil {
+			if err := Extract(path, filepath.Dir(path), (w.RemoveTopLevel || false)); err != nil {
 				return err
 			}
 		}
@@ -178,7 +178,7 @@ func Sync() error {
 		// Symlink
 		var linkSource string
 		if IsArchive(path) {
-			linkSource = name
+			linkSource = w.Name
 		} else {
 			linkSource = l.Asset
 		}
