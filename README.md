@@ -70,6 +70,25 @@ wares:
                                              # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
 
+#### Installing a package with Multiple Artifacts
+
+If your `.tar.gz` archive has multiple files that *all* need to be symlinked, you can use the `multiple` attribute.
+
+When using `multiple`, a new directory named after the package will be created, into which the contents of the archive will be symlinked.
+> Ensure that `~/Wares/<package name>` is in your **$PATH** for this to work.
+
+In this example, I'll be installing [Cubyz](https://github.com/PixelGuys/Cubyz), which is packaged in `.tar.gz` format and requires multiple artifacts.
+
+
+```yaml
+wares:
+  Cubyz:                         # Name of the directory that the artifacts will be symlinked into inside ~/Wares
+    name: Cubyz                  # Not very useful for multi-artifact, but can't be empty
+    repo: pixelguys/cubyz        # GitHub repo (without github.com)
+    asset: "Linux-x86_64.tar.gz" # Pattern which will match the downloaded asset you would like
+                                   # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
+```
+
 ### Updating packages
 
 To update packages, run the following command:
