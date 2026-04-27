@@ -179,10 +179,10 @@ func Sync() error {
 		if err := LinkWare(name, w.Repo, l.Version, linkSource); err != nil {
 			return fmt.Errorf("%s: link: %w", name, err)
 		}
-
-		// Remove orphaned packages
-		UninstallOrphans()
 	}
+
+	// Remove orphaned packages
+	UninstallOrphans()
 
 	// Persist lockfile if modified
 	if changed {
