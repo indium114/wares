@@ -5,7 +5,7 @@
 - [x] BREAKING: Change config filename from `wares.yaml` to `config.yaml`
 - [x] Use `name` field for symlinking rather than top-level entry name
   - [x] Allow symlinking files multiple levels deep inside archive (optional --strip-components=1)
-- [ ] `clean` command to remove old versions of packages
+- [x] `clean` command to remove old versions of packages
 
 ## Not needed currently
 
