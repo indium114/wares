@@ -52,7 +52,7 @@ func WaresFile() (string, error) {
 		return "", err
 	}
 
-	return filepath.Join(dir, "wares.yaml"), nil
+	return filepath.Join(dir, "config.yaml"), nil
 }
 
 func LockFile() (string, error) {
