@@ -1,5 +1,14 @@
 # TODO
 
-- [x] Detect if artifacts are `.tar.*`, and extract them if so
-  - [x] Option to symlink multiple artifacts into `~/Wares/<package>/*` as a directory
-- [x] Switch from `name` to `tagName` for releases
+## Needed for 0.3.0 release
+
+- [x] BREAKING: Change config filename from `wares.yaml` to `config.yaml`
+- [ ] Use `name` field for symlinking rather than top-level entry name
+  - [ ] Allow symlinking files multiple levels deep inside archive
+
+## Not needed currently
+
+- [ ] Explore configuring in `pkl` rather than `yaml`
+- [ ] Allow users to manage their distro's package manager in wares config
+  - [ ] Configure how their package manager handles installation, removal, and upgrading packages
+  - [ ] Allow configuration of multiple package managers
