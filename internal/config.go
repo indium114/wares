@@ -15,10 +15,11 @@ type Config struct {
 }
 
 type Ware struct {
-	Repo     string `yaml:"repo"`
-	Asset    string `yaml:"asset"`
-	Name     string `yaml:"name"`
-	Multiple bool   `yaml:"multiple"`
+	Repo           string `yaml:"repo"`
+	Asset          string `yaml:"asset"`
+	Name           string `yaml:"name"`
+	Multiple       bool   `yaml:"multiple"`
+	RemoveTopLevel bool   `yaml:"removetoplevel"`
 }
 
 type Lockfile struct {
@@ -52,7 +53,7 @@ func WaresFile() (string, error) {
 		return "", err
 	}
 
-	return filepath.Join(dir, "wares.yaml"), nil
+	return filepath.Join(dir, "config.yaml"), nil
 }
 
 func LockFile() (string, error) {

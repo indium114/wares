@@ -20,7 +20,7 @@ If it tells you that ~/Wares is not in your `$PATH`, please add it.
 
 ### Letting wares manage itself
 
-Then, create `~/.config/wares` and paste the following into `~/.config/wares/wares.yaml`:
+Then, create `~/.config/wares` and paste the following into `~/.config/wares/config.yaml`:
 
 ```yaml
 wares:
@@ -38,10 +38,10 @@ Then, run `/path/to/wares sync` to download Wares, and it will now manage itself
 
 ### Installing a package
 
-To install a package, add it to the `wares` section of `wares.yaml`.
+To install a package, add it to the `wares` section of `config.yaml`.
 
 
-#### Installing an AppImage
+#### Installing an AppImage or Binary
 
 For example, here's me installing [Helix](https://github.com/helix-editor/helix) using wares
 
@@ -69,6 +69,25 @@ wares:
     asset: "lazygit_*_linux_x86_64.tar.gz" # Pattern which will match the downloaded asset you would like
                                              # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
+
+##### Removing top-level directory
+
+Some `.tar.gz`-archived packages may include a top-level directory, usually named the same things as the archive itself.
+
+To remedy this, you can set `removetoplevel: true` under a ware.
+
+In this example, I'll be installing the [GitHub CLI](https://github.com/cli/cli), which is packaged like this.
+
+```yaml
+wares:
+  gh:
+    name: bin/gh
+    repo: cli/cli
+    asset: "gh_*_linux_amd64.tar.gz"
+    removetoplevel: true # This is the important part for this archive.
+```
+
+If you want to know if a particular package does this or not, download and extract the archive for yourself.
 
 #### Installing a package with Multiple Artifacts
 

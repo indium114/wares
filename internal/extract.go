@@ -13,8 +13,15 @@ func IsArchive(name string) bool {
 	return false
 }
 
-func Extract(archive, dir string) error {
-	command := exec.Command("tar", "xvf", archive, "--directory", dir)
+func Extract(archive, dir string, removeTopLevel bool) error {
+	var removeTopLevelArg string
+	if removeTopLevel {
+		removeTopLevelArg = "--strip-components=1"
+	} else {
+		removeTopLevelArg = ""
+	}
+
+	command := exec.Command("tar", "xvf", archive, "--directory", dir, removeTopLevelArg)
 	err := command.Run()
 	if err != nil {
 		return err
