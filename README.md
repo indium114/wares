@@ -20,7 +20,7 @@ If it tells you that ~/Wares is not in your `$PATH`, please add it.
 
 ### Letting wares manage itself
 
-Then, create `~/.config/wares` and paste the following into `~/.config/wares/wares.yaml`:
+Then, create `~/.config/wares` and paste the following into `~/.config/wares/config.yaml`:
 
 ```yaml
 wares:
@@ -38,7 +38,7 @@ Then, run `/path/to/wares sync` to download Wares, and it will now manage itself
 
 ### Installing a package
 
-To install a package, add it to the `wares` section of `wares.yaml`.
+To install a package, add it to the `wares` section of `config.yaml`.
 
 
 #### Installing an AppImage
