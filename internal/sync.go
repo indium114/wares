@@ -60,6 +60,7 @@ func findOrphans() []string {
 
 	return orphans
 }
+
 func UninstallOrphans() error {
 	lock, err := LoadLock()
 	if err != nil {
