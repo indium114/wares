@@ -15,9 +15,10 @@ type Config struct {
 }
 
 type Ware struct {
-	Repo  string `yaml:"repo"`
-	Asset string `yaml:"asset"`
-	Name  string `yaml:"name"`
+	Repo     string `yaml:"repo"`
+	Asset    string `yaml:"asset"`
+	Name     string `yaml:"name"`
+	Multiple bool   `yaml:"multiple"`
 }
 
 type Lockfile struct {
@@ -64,7 +65,6 @@ func LockFile() (string, error) {
 }
 
 // MARK: Parsing
-
 func readYamlFile(path string, out any) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
