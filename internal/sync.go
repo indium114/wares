@@ -106,6 +106,11 @@ func Sync() error {
 	changed := false
 
 	for name, w := range cfg.Wares {
+		// Remove old version
+		if err := removeLink(name); err != nil {
+			return err
+		}
+
 		fmt.Printf("%s Installing %s\n", SyncText, name)
 
 		l, ok := lock.Wares[name]

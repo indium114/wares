@@ -47,10 +47,6 @@ func Update() error {
 			l.Version = latest
 			l.Digest = ""
 			lock.Wares[name] = l
-
-			if err := removeLink(name); err != nil {
-				return err
-			}
 		}
 	}
 
