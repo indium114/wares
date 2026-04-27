@@ -85,6 +85,7 @@ wares:
   Cubyz:                         # Name of the directory that the artifacts will be symlinked into inside ~/Wares
     name: Cubyz                  # Not very useful for multi-artifact, but can't be empty
     repo: pixelguys/cubyz        # GitHub repo (without github.com)
+    multiple: true               # Denotes that *all* files in the archive must be symlinked
     asset: "Linux-x86_64.tar.gz" # Pattern which will match the downloaded asset you would like
                                    # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
