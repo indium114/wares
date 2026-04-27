@@ -176,6 +176,11 @@ func Sync() error {
 		} else {
 			linkSource = l.Asset
 		}
+
+		if w.Multiple {
+			linkSource = filepath.Dir(linkSource)
+		}
+
 		if err := LinkWare(name, w.Repo, l.Version, linkSource); err != nil {
 			return fmt.Errorf("%s: link: %w", name, err)
 		}
