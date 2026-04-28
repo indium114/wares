@@ -2,10 +2,8 @@
 
 ## Needed for 0.3.1 release
 
-- [ ] Add `tar` and `unzip` command availability check to `wares doctor`
-- [ ] `.zip` extraction
-- [ ] Automatic renaming of `wares.yaml` to `config.yaml`
-	- Should be removed by *0.4.0*
+- [x] Add `tar` and `unzip` command availability check to `wares doctor`
+- [x] `.zip` extraction
 
 ## Needed for 0.4.0
 
@@ -16,3 +14,4 @@
 ## Not needed currently
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
+- [ ] `wares add` command to add pre-made ware configurations for packages from a centralised repository

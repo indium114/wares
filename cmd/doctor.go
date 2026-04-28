@@ -47,6 +47,15 @@ func checkGhCli() bool {
 	return false
 }
 
+func checkCommandExists(command string) bool {
+	_, err := exec.LookPath(command)
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
 	Short: "Check that all of wares' prerequisites are met",
@@ -88,9 +97,22 @@ var doctorCmd = &cobra.Command{
 
 		// MARK: Check for authenticated gh CLI
 		if status := checkGhCli(); status == true {
-			fmt.Printf("%s Logged into GitHub CLI", internal.OkText)
+			fmt.Printf("%s Logged into GitHub CLI\n", internal.OkText)
 		} else {
-			fmt.Printf("%s Not logged into GitHub CLI", internal.ErrText)
+			fmt.Printf("%s Not logged into GitHub CLI\n", internal.ErrText)
+		}
+
+		// MARK: Check for tar and unzip commands
+		if checkCommandExists("tar") {
+			fmt.Printf("%s tar command found\n", internal.OkText)
+		} else {
+			fmt.Printf("%s tar command not found\n", internal.ErrText)
+		}
+
+		if checkCommandExists("unzip") {
+			fmt.Printf("%s unzip command found\n", internal.OkText)
+		} else {
+			fmt.Printf("%s unzip command not found\n", internal.ErrText)
 		}
 
 		return nil

@@ -5,23 +5,34 @@ import (
 	"strings"
 )
 
-func IsArchive(name string) bool {
+func IsArchive(name string) (bool, string) {
 	if strings.HasSuffix(name, ".gz") {
-		return true
+		return true, "gz"
+	} else if strings.HasSuffix(name, ".zip") {
+		return true, "zip"
 	}
 
-	return false
+	return false, ""
 }
 
-func Extract(archive, dir string, removeTopLevel bool) error {
+func Extract(archive, dir, kind string, removeTopLevel bool) error {
 	var removeTopLevelArg string
 	if removeTopLevel {
-		removeTopLevelArg = "--strip-components=1"
+		if kind == "gz" {
+			removeTopLevelArg = "--strip-components=1"
+		} else {
+			removeTopLevelArg = "-j"
+		}
 	} else {
 		removeTopLevelArg = ""
 	}
 
-	command := exec.Command("tar", "xvf", archive, "--directory", dir, removeTopLevelArg)
+	var command *exec.Cmd
+	if kind == "gz" {
+		command = exec.Command("tar", "xvf", archive, "--directory", dir, removeTopLevelArg)
+	} else {
+		command = exec.Command("unzip", removeTopLevelArg, "-d", dir, archive)
+	}
 	err := command.Run()
 	if err != nil {
 		return err
