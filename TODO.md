@@ -3,7 +3,7 @@
 ## Needed for 0.3.1 release
 
 - [x] Add `tar` and `unzip` command availability check to `wares doctor`
-- [ ] `.zip` extraction
+- [x] `.zip` extraction
 - [ ] Automatic renaming of `wares.yaml` to `config.yaml`
 	- Should be removed by *0.4.0*
 

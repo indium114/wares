@@ -169,15 +169,15 @@ func Sync() error {
 		}
 
 		// Extract if .tar.gz
-		if IsArchive(path) {
-			if err := Extract(path, filepath.Dir(path), (w.RemoveTopLevel || false)); err != nil {
+		if archive, kind := IsArchive(path); archive == true {
+			if err := Extract(path, filepath.Dir(path), kind, (w.RemoveTopLevel || false)); err != nil {
 				return err
 			}
 		}
 
 		// Symlink
 		var linkSource string
-		if IsArchive(path) {
+		if archive, _ := IsArchive(path); archive == true {
 			linkSource = w.Name
 		} else {
 			linkSource = l.Asset
