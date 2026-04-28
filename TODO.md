@@ -1,15 +1,17 @@
 # TODO
 
-## Needed for 0.3.0 release
+## Needed for 0.3.1 release
 
-- [x] BREAKING: Change config filename from `wares.yaml` to `config.yaml`
-- [x] Use `name` field for symlinking rather than top-level entry name
-  - [x] Allow symlinking files multiple levels deep inside archive (optional --strip-components=1)
-- [x] `clean` command to remove old versions of packages
+- [ ] `.zip` extraction
+- [ ] Automatic renaming of `wares.yaml` to `config.yaml`
+	- Should be removed by *0.4.0*
+
+## Needed for 0.4.0
+
+- [ ] Allow users to manage their distro's package manager in wares config
+  - [ ] Configure how their package manager handles installation, removal, and upgrading packages
+  - [ ] Allow configuration of multiple package managers
 
 ## Not needed currently
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
-- [ ] Allow users to manage their distro's package manager in wares config
-  - [ ] Configure how their package manager handles installation, removal, and upgrading packages
-  - [ ] Allow configuration of multiple package managers
