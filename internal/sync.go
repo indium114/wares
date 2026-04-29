@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func ResolveDownloadedPath(repo, version, pattern string) (string, error) {
+func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string, error) {
 	dir, err := EnsureStoreDir(repo, version)
 	if err != nil {
 		return "", err
@@ -37,7 +37,11 @@ func ResolveDownloadedPath(repo, version, pattern string) (string, error) {
 		for _, f := range files {
 			names = append(names, f.Name())
 		}
-		return "", fmt.Errorf("%s Multiple artifacts found in %s: %v", ErrText, dir, names)
+		if multiple {
+			return filepath.Join(dir, files[0].Name()), nil
+		} else {
+			return "", fmt.Errorf("%s Multiple artifacts found in %s: %v", ErrText, dir, names)
+		}
 	}
 
 	return filepath.Join(dir, files[0].Name()), nil
@@ -144,7 +148,7 @@ func Sync() error {
 		}
 
 		// Resolve installed file path
-		path, err := ResolveDownloadedPath(w.Repo, l.Version, w.Asset)
+		path, err := ResolveDownloadedPath(w.Repo, l.Version, w.Asset, w.Multiple)
 		if err != nil {
 			return fmt.Errorf("%s: resolve path: %w", name, err)
 		}
