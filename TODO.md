@@ -5,6 +5,10 @@
 - [x] Add `tar` and `unzip` command availability check to `wares doctor`
 - [x] `.zip` extraction
 
+## Needed for 0.3.3
+
+- [ ] Fix: allow users to download multiple artifacts if `multiple: true`
+
 ## Needed for 0.4.0
 
 - [ ] Allow users to manage their distro's package manager in wares config
