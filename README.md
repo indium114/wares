@@ -1,5 +1,7 @@
 # wares
 
+![wares logo](assets/wares_logo_with_text.png)
+
 *wares* is a declarative AppImage/binary package manager!
 
 ## Installation
