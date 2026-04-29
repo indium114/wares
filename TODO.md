@@ -15,4 +15,5 @@
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
 - [ ] `wares add` command to add pre-made ware configurations for packages from a centralised repository
+	- waresHub
 - [x] Logo
