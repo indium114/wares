@@ -31,7 +31,11 @@ func Extract(archive, dir, kind string, removeTopLevel bool) error {
 	if kind == "gz" {
 		command = exec.Command("tar", "xvf", archive, "--directory", dir, removeTopLevelArg)
 	} else {
-		command = exec.Command("unzip", removeTopLevelArg, "-d", dir, archive)
+		if removeTopLevelArg != "" {
+			command = exec.Command("unzip", removeTopLevelArg, "-d", dir, archive)
+		} else {
+			command = exec.Command("unzip", "-d", dir, archive)
+		}
 	}
 	err := command.Run()
 	if err != nil {
