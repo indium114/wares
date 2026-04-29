@@ -7,7 +7,7 @@
 
 ## Needed for 0.3.3
 
-- [ ] Fix: allow users to download multiple artifacts if `multiple: true`
+- [x] Fix: allow users to download multiple artifacts if `multiple: true`
 
 ## Needed for 0.4.0
 
