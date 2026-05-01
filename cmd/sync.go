@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/indium114/wares/internal"
@@ -13,7 +14,15 @@ var syncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync installed packages with config",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := internal.Sync()
+		// check if config directory is a git repo, and if it has unstaged changes
+		configDir, _ := internal.ConfigDir()
+		command := exec.Command("git", "-C", configDir, "status", "--porcelain")
+		out, err := command.Output()
+		if string(out) != "" && string(out) != "fatal: not a git repository (or any of the parent directories): .git" {
+			fmt.Printf("%s Git tree dirty (remember to commit your changes)\n", internal.WarnText)
+		}
+
+		err = internal.Sync()
 		if err != nil {
 			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
 			return err
