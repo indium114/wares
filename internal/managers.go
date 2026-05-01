@@ -1,6 +1,9 @@
 package internal
 
-import ()
+import (
+	"os"
+	"os/exec"
+)
 
 func findManagerOrphans(cfg *Config, lock *Lockfile) map[string][]string {
 	orphans := map[string][]string{}
@@ -27,3 +30,14 @@ func findManagerOrphans(cfg *Config, lock *Lockfile) map[string][]string {
 
 	return orphans
 }
+
+func runManagerCommand(command, pkg string) error {
+	fullCmd := command + " " + pkg
+	cmd := exec.Command(fullCmd)
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+func uninstallManagerOrphans() {}
