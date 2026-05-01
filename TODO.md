@@ -16,9 +16,9 @@
 
 ## Needed for 0.4.0
 
-- [ ] Allow users to manage their distro's package manager in wares config
-  - [ ] Configure how their package manager handles installation, removal, and upgrading packages
-  - [ ] Allow configuration of multiple package managers
+- [x] Allow users to manage their distro's package manager in wares config
+  - [x] Configure how their package manager handles installation, removal, and upgrading packages
+  - [x] Allow configuration of multiple package managers
 
 ## Needed for 0.5.0
 
