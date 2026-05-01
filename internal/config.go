@@ -11,7 +11,9 @@ import (
 
 // MARK: Types
 type Config struct {
-	Wares map[string]Ware `yaml:"wares"`
+	Wares    map[string]Ware     `yaml:"wares"`
+	Settings Settings            `yaml:"settings"`
+	Managers map[string][]string `yaml:"managers"`
 }
 
 type Ware struct {
@@ -22,8 +24,19 @@ type Ware struct {
 	RemoveTopLevel bool   `yaml:"removetoplevel"`
 }
 
+type Settings struct {
+	Managers map[string]ManagerSettings `yaml:"managers"`
+}
+
+type ManagerSettings struct {
+	Install string `yaml:"install"`
+	Remove  string `yaml:"remove"`
+	Update  string `yaml:"update"`
+}
+
 type Lockfile struct {
-	Wares map[string]LockedWare `yaml:"wares"`
+	Wares    map[string]LockedWare `yaml:"wares"`
+	Managers map[string][]string   `yaml:"managers"`
 }
 
 type LockedWare struct {
@@ -84,7 +97,9 @@ func LoadConfig() (*Config, error) {
 		if os.IsNotExist(err) {
 			// return empty config
 			return &Config{
-				Wares: map[string]Ware{},
+				Wares:    map[string]Ware{},
+				Settings: Settings{Managers: map[string]ManagerSettings{}},
+				Managers: map[string][]string{},
 			}, nil
 		}
 		return nil, err
