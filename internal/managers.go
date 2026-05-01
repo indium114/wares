@@ -33,7 +33,7 @@ func findManagerOrphans(cfg *Config, lock *Lockfile) map[string][]string {
 }
 
 func runManagerCommand(command, pkg string) error {
-	cmd := exec.Command(command, pkg)
+	cmd := exec.Command("sh", "-c", command, pkg)
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
