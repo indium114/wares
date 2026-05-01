@@ -130,7 +130,8 @@ func LoadLock() (*Lockfile, error) {
 		if os.IsNotExist(err) {
 			// return empty config
 			return &Lockfile{
-				Wares: map[string]LockedWare{},
+				Wares:    map[string]LockedWare{},
+				Managers: map[string][]string{},
 			}, nil
 		}
 		return nil, err
@@ -138,6 +139,10 @@ func LoadLock() (*Lockfile, error) {
 
 	if lock.Wares == nil {
 		lock.Wares = map[string]LockedWare{}
+	}
+
+	if lock.Managers == nil {
+		lock.Managers = map[string][]string{}
 	}
 
 	return &lock, nil
@@ -159,6 +164,10 @@ func SaveLock(lock *Lockfile) error {
 	// ensure maps are not nil (prevents ugly YAML output)
 	if lock.Wares == nil {
 		lock.Wares = map[string]LockedWare{}
+	}
+
+	if lock.Managers == nil {
+		lock.Managers = map[string][]string{}
 	}
 
 	data, err := yaml.Marshal(lock)
