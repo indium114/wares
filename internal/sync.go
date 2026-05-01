@@ -196,6 +196,11 @@ func Sync() error {
 		}
 	}
 
+	// Sync native managers
+	if err := SyncManagers(cfg, lock); err != nil {
+		return err
+	}
+
 	// Remove orphaned packages
 	UninstallOrphans()
 
