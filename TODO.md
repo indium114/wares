@@ -11,7 +11,7 @@
 
 ## Needed for 0.3.4
 
-- [ ] Add dirty git repo warning when changes are unstaged
+- [x] Add dirty git repo warning when changes are unstaged
 	- Use `git status --porcelain`, ignore error if it matches "fatal: not a git repository (or any of the parent directories): .git"
 
 ## Needed for 0.4.0
