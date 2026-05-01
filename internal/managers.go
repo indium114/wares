@@ -138,15 +138,15 @@ func UpdateManagers(cfg *Config, lock *Lockfile) error {
 	for managerName := range lock.Managers {
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
-			fmt.Printf("%s No settings for manager %s, skipping", WarnText, managerName)
+			fmt.Printf("%s No settings for manager %s, skipping\n", WarnText, managerName)
 			continue
 		}
 		if settings.Update == "" {
-			fmt.Printf("%s No update command for manager %s, skipping", WarnText, managerName)
+			fmt.Printf("%s No update command for manager %s, skipping\n", WarnText, managerName)
 			continue
 		}
 
-		fmt.Printf("%s %s", UpdateText, managerName)
+		fmt.Printf("%s %s\n", UpdateText, managerName)
 		if err := runManagerCommand(settings.Update, ""); err != nil {
 			return err
 		}
