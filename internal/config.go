@@ -109,6 +109,14 @@ func LoadConfig() (*Config, error) {
 		cfg.Wares = map[string]Ware{}
 	}
 
+	if cfg.Managers == nil {
+		cfg.Managers = map[string][]string{}
+	}
+
+	if cfg.Settings.Managers == nil {
+		cfg.Settings.Managers = map[string]ManagerSettings{}
+	}
+
 	return &cfg, nil
 }
 
