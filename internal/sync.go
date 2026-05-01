@@ -197,9 +197,12 @@ func Sync() error {
 	}
 
 	// Sync native managers
-	if changed, err = SyncManagers(cfg, lock); err != nil {
+	var mgrChanged bool
+	if mgrChanged, err = SyncManagers(cfg, lock); err != nil {
 		return err
 	}
+
+	changed = changed || mgrChanged
 
 	// Remove orphaned packages
 	UninstallOrphans()
