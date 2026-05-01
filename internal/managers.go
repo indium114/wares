@@ -133,3 +133,24 @@ func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
 
 	return changed, nil
 }
+
+func UpdateManagers(cfg *Config, lock *Lockfile) error {
+	for managerName := range lock.Managers {
+		settings, exists := cfg.Settings.Managers[managerName]
+		if !exists {
+			fmt.Printf("%s No settings for manager %s, skipping", WarnText, managerName)
+			continue
+		}
+		if settings.Update == "" {
+			fmt.Printf("%s No update command for manager %s, skipping", WarnText, managerName)
+			continue
+		}
+
+		fmt.Printf("%s %s", UpdateText, managerName)
+		if err := runManagerCommand(settings.Update, ""); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
