@@ -111,6 +111,39 @@ wares:
                                    # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
 
+### Managing distro packages
+
+`wares` can manage your distro's package manager as well, allowing you to declaratively install packages from *apt*, *pacman*, *flatpak*, etc.
+
+#### Configuring managers
+
+To configure a manager, add it to the `settings:managers` section of `config.yaml`.
+
+In this example, I'll configure `flatpak`.
+
+```yaml
+settings:
+  managers:
+    flatpak:                         # Name of the package manager
+      install: "flatpak install -y"  # Command to install a package
+      remove: "flatpak uninstall -y" # Command to remove a package
+      update: "flatpak update -y"    # Command to update all installed packages
+```
+
+#### Installing distro packages
+
+Now that your *manager* is configured, let's install a package!
+
+This is done in the `managers:<manager_name>` section of `config.yaml`.
+
+In this example, I'll be installing *Resources* (`net.nokyan.Resources`) as a `flatpak`.
+
+```yaml
+managers:
+  flatpak:                   # Name of the package manager (set earlier in settings:managers)
+    - "net.nokyan.Resources" # Package to install
+```
+
 ### Updating packages
 
 To update packages, run the following command:

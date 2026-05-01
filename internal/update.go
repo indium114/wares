@@ -50,5 +50,9 @@ func Update() error {
 		}
 	}
 
+	if err := UpdateManagers(cfg, lock); err != nil {
+		return err
+	}
+
 	return SaveLock(lock)
 }
