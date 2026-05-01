@@ -48,6 +48,7 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
 			fmt.Printf("%s No settings for manager %s, skipping removal\n", WarnText, managerName)
+			continue
 		}
 
 		// remove the pkg
@@ -76,7 +77,9 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
 	return nil
 }
 
-func SyncManagers(cfg *Config, lock *Lockfile) error {
+func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
+	changed := false
+
 	for managerName, pkgs := range cfg.Managers {
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
@@ -100,16 +103,17 @@ func SyncManagers(cfg *Config, lock *Lockfile) error {
 
 			fmt.Printf("%s Installing %s/%s\n", SyncText, managerName, pkg)
 			if err := runManagerCommand(settings.Install, pkg); err != nil {
-				return err
+				return false, err
 			}
 
 			lock.Managers[managerName] = append(lock.Managers[managerName], pkg)
+			changed = true
 		}
 	}
 
 	// remove orphans
 	if err := uninstallManagerOrphans(cfg, lock); err != nil {
-		return err
+		return false, err
 	}
 
 	// remove manager from lockfile if no locked packages
@@ -119,5 +123,5 @@ func SyncManagers(cfg *Config, lock *Lockfile) error {
 		}
 	}
 
-	return nil
+	return changed, nil
 }

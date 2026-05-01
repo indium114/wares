@@ -197,7 +197,7 @@ func Sync() error {
 	}
 
 	// Sync native managers
-	if err := SyncManagers(cfg, lock); err != nil {
+	if changed, err = SyncManagers(cfg, lock); err != nil {
 		return err
 	}
 
