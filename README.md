@@ -93,7 +93,7 @@ If you want to know if a particular package does this or not, download and extra
 
 #### Installing a package with Multiple Artifacts
 
-If your `.tar.gz` archive has multiple files that *all* need to be symlinked, you can use the `multiple` attribute.
+If your package has multiple files that *all* need to be symlinked, you can use the `multiple` attribute.
 
 When using `multiple`, a new directory named after the package will be created, into which the contents of the archive will be symlinked.
 > Ensure that `~/Wares/<package name>` is in your **$PATH** for this to work.
