@@ -41,8 +41,9 @@ func runManagerCommand(command, pkg string) error {
 	return cmd.Run()
 }
 
-func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
+func uninstallManagerOrphans(cfg *Config, lock *Lockfile) (bool, error) {
 	orphans := findManagerOrphans(cfg, lock)
+	changed := false
 
 	for managerName, pkgs := range orphans {
 		// check that manager is configured
@@ -56,7 +57,7 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
 		for _, pkg := range pkgs {
 			fmt.Printf("%s Removing %s/%s\n", SyncText, managerName, pkg)
 			if err := runManagerCommand(settings.Remove, pkg); err != nil {
-				return err
+				return false, err
 			}
 
 			// unlock pkg
@@ -72,10 +73,12 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
 			if len(filtered) == 0 {
 				delete(lock.Managers, managerName)
 			}
+
+			changed = true
 		}
 	}
 
-	return nil
+	return changed, nil
 }
 
 func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
@@ -113,7 +116,9 @@ func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
 	}
 
 	// remove orphans
-	if err := uninstallManagerOrphans(cfg, lock); err != nil {
+	var uninstallChanged bool
+	var err error
+	if uninstallChanged, err = uninstallManagerOrphans(cfg, lock); err != nil {
 		return false, err
 	}
 
@@ -123,6 +128,8 @@ func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
 			delete(lock.Managers, managerName)
 		}
 	}
+
+	changed = changed || uninstallChanged
 
 	return changed, nil
 }
