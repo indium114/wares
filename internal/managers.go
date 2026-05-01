@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 )
@@ -40,4 +41,38 @@ func runManagerCommand(command, pkg string) error {
 	return cmd.Run()
 }
 
-func uninstallManagerOrphans() {}
+func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
+	orphans := findManagerOrphans(cfg, lock)
+
+	for managerName, pkgs := range orphans {
+		// check that manager is configured
+		settings, exists := cfg.Settings.Managers[managerName]
+		if !exists {
+			fmt.Printf("%s No settings for manager %s, skipping removal\n", WarnText, managerName)
+		}
+
+		// remove the pkg
+		for _, pkg := range pkgs {
+			fmt.Printf("%s Removing %s/%s\n", SyncText, managerName, pkg)
+			if err := runManagerCommand(settings.Remove, pkg); err != nil {
+				return err
+			}
+
+			// unlock pkg
+			lockPkgs := lock.Managers[managerName]
+			filtered := make([]string, 0, len(lockPkgs))
+			for _, p := range lockPkgs {
+				if p != pkg {
+					filtered = append(filtered, p)
+				}
+			}
+			lock.Managers[managerName] = filtered
+
+			if len(filtered) == 0 {
+				delete(lock.Managers, managerName)
+			}
+		}
+	}
+
+	return nil
+}
