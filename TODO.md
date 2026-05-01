@@ -29,3 +29,4 @@
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
 - [x] Logo
+- [ ] Explore support for downloading artifacts from *codeberg* releases
