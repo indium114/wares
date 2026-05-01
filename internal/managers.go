@@ -76,3 +76,49 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) error {
 
 	return nil
 }
+
+func SyncManagers(cfg *Config, lock *Lockfile) error {
+	for managerName, pkgs := range cfg.Managers {
+		settings, exists := cfg.Settings.Managers[managerName]
+		if !exists {
+			fmt.Printf("%s No settings for manager %s, skipping\n", WarnText, managerName)
+			continue
+		}
+
+		if lock.Managers == nil {
+			lock.Managers = map[string][]string{}
+		}
+
+		lockedSet := make(map[string]bool)
+		for _, p := range lock.Managers[managerName] {
+			lockedSet[p] = true
+		}
+
+		for _, pkg := range pkgs {
+			if lockedSet[pkg] {
+				continue
+			}
+
+			fmt.Printf("%s Installing %s/%s\n", SyncText, managerName, pkg)
+			if err := runManagerCommand(settings.Install, pkg); err != nil {
+				return err
+			}
+
+			lock.Managers[managerName] = append(lock.Managers[managerName], pkg)
+		}
+	}
+
+	// remove orphans
+	if err := uninstallManagerOrphans(cfg, lock); err != nil {
+		return err
+	}
+
+	// remove manager from lockfile if no locked packages
+	for managerName, pkgs := range lock.Managers {
+		if len(pkgs) == 0 {
+			delete(lock.Managers, managerName)
+		}
+	}
+
+	return nil
+}
