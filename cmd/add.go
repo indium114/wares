@@ -14,7 +14,7 @@ var addCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pkgName := args[0]
 
-		fmt.Printf("%s Adding ware %s from warehouse to config", internal.AddText, pkgName)
+		fmt.Printf("%s Adding ware %s from warehouse to config\n", internal.AddText, pkgName)
 
 		cfg, err := internal.LoadConfig()
 		if err != nil {
