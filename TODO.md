@@ -31,6 +31,9 @@
 	- Lock commit
 		- Checkout into detached commit before running build steps
 	- Specify repo root-relative path for symlinking build artifacts
+	- `blueprints:` section of config
+		- `steps:` to build
+		- `artifacts:` to symlink
 
 ## Not needed currently
 
