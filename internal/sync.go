@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+type syncResult struct {
+	name       string
+	repo       string
+	version    string
+	linkSource string
+}
+
 func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string, error) {
 	dir, err := EnsureStoreDir(repo, version)
 	if err != nil {
@@ -110,12 +117,9 @@ func Sync() error {
 
 	changed := false
 
-	for name, w := range cfg.Wares {
-		// Remove old version
-		if err := removeLink(name); err != nil {
-			return err
-		}
+	var results []syncResult
 
+	for name, w := range cfg.Wares {
 		fmt.Printf("%s Installing %s\n", SyncText, name)
 
 		l, ok := lock.Wares[name]
@@ -191,8 +195,21 @@ func Sync() error {
 			linkSource = filepath.Dir(linkSource)
 		}
 
-		if err := LinkWare(name, w.Repo, l.Version, linkSource); err != nil {
-			return fmt.Errorf("%s: link: %w", name, err)
+		results = append(results, syncResult{
+			name:       name,
+			repo:       w.Repo,
+			version:    l.Version,
+			linkSource: linkSource,
+		})
+	}
+
+	for _, r := range results {
+		if err := removeLink(r.name); err != nil {
+			return err
+		}
+
+		if err := LinkWare(r.name, r.repo, r.version, r.linkSource); err != nil {
+			return fmt.Errorf("%s: link: %w", r.name, err)
 		}
 	}
 

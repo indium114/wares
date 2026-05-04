@@ -22,7 +22,7 @@
 
 ## Needed for 0.4.1
 
-- [ ] Only remove and create symlinks at the end
+- [x] Only remove and create symlinks at the end
 
 ## Needed for 0.5.0
 
