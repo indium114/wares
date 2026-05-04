@@ -26,7 +26,7 @@
 
 ## Needed for 0.5.0
 
-- [ ] `wares add` command to add pre-made ware configurations for packages from a centralised repository
+- [x] `wares add` command to add pre-made ware configurations for packages from a centralised repository
 	- warehouse
 
 ## Needed for 0.6.0
