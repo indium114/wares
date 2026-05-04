@@ -12,4 +12,5 @@ var (
 	UpdateText string = color.MagentaString("[UPDATE]")
 	LogText    string = color.HiBlackString("[LOG]")
 	CleanText  string = color.CyanString("[CLEAN]")
+	AddText    string = color.HiMagentaString("[ADD]")
 )
