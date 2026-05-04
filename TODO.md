@@ -20,6 +20,10 @@
   - [x] Configure how their package manager handles installation, removal, and upgrading packages
   - [x] Allow configuration of multiple package managers
 
+## Needed for 0.4.1
+
+- [ ] Only remove and create symlinks at the end
+
 ## Needed for 0.5.0
 
 - [ ] `wares add` command to add pre-made ware configurations for packages from a centralised repository
