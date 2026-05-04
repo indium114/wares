@@ -25,7 +25,6 @@ var syncCmd = &cobra.Command{
 		err = internal.Sync()
 		if err != nil {
 			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
-			return err
 		}
 
 		fmt.Printf("%s Marking all files in ~/Wares as executable\n", internal.LogText)
