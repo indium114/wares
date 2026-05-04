@@ -24,23 +24,25 @@ var addCmd = &cobra.Command{
 		// check that platform and arch settings are set
 		if cfg.Settings.Platform == "" {
 			fmt.Printf("%s settings:platform not set in config.yaml (must be 'linux' or 'darwin')\n", internal.ErrText)
-			return err
+			return nil
 		}
 
 		if cfg.Settings.Arch == "" {
 			fmt.Printf("%s settings:arch not set in config.yaml (must be 'x86_64' or 'aarch64')\n", internal.ErrText)
-			return err
+			return nil
 		}
 
 		// validate platform and arch settings
 		validPlatforms := map[string]bool{"linux": true, "darwin": true}
 		if !validPlatforms[cfg.Settings.Platform] {
 			fmt.Printf("%s Invalid platform %q (must be 'linux' or 'darwin')\n", internal.ErrText, cfg.Settings.Platform)
+			return nil
 		}
 
 		validArches := map[string]bool{"x86_64": true, "aarch64": true}
 		if !validArches[cfg.Settings.Arch] {
 			fmt.Printf("%s Invalid platform %q (must be 'x86_64' or 'aarch64')\n", internal.ErrText, cfg.Settings.Arch)
+			return nil
 		}
 
 		// skip if user has already configured package
