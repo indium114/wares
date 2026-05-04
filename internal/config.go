@@ -26,6 +26,8 @@ type Ware struct {
 
 type Settings struct {
 	Managers map[string]ManagerSettings `yaml:"managers"`
+	Platform string                     `yaml:"platform"`
+	Arch     string                     `yaml:"arch"`
 }
 
 type ManagerSettings struct {
@@ -171,6 +173,51 @@ func SaveLock(lock *Lockfile) error {
 	}
 
 	data, err := yaml.Marshal(lock)
+	if err != nil {
+		return err
+	}
+
+	// write to temp file first
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+
+	// atomic replace
+	if err := os.Rename(tmp, path); err != nil {
+		_ = os.Remove(tmp)
+		return err
+	}
+
+	return nil
+}
+
+func SaveConfig(config *Config) error {
+	dir, err := ConfigDir()
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		return err
+	}
+
+	path := filepath.Join(dir, "config.yaml")
+	tmp := path + ".tmp"
+
+	// ensure maps are not nil (prevents ugly YAML output)
+	if config.Wares == nil {
+		config.Wares = map[string]Ware{}
+	}
+
+	if config.Managers == nil {
+		config.Managers = map[string][]string{}
+	}
+
+	if config.Settings.Managers == nil {
+		config.Settings.Managers = map[string]ManagerSettings{}
+	}
+
+	data, err := yaml.Marshal(config)
 	if err != nil {
 		return err
 	}
