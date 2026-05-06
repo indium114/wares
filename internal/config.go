@@ -11,9 +11,10 @@ import (
 
 // MARK: Types
 type Config struct {
-	Wares    map[string]Ware     `yaml:"wares"`
-	Settings Settings            `yaml:"settings"`
-	Managers map[string][]string `yaml:"managers"`
+	Wares      map[string]Ware      `yaml:"wares"`
+	Blueprints map[string]Blueprint `yaml:"blueprints"`
+	Settings   Settings             `yaml:"settings"`
+	Managers   map[string][]string  `yaml:"managers"`
 }
 
 type Ware struct {
@@ -22,6 +23,12 @@ type Ware struct {
 	Name           string `yaml:"name"`
 	Multiple       bool   `yaml:"multiple"`
 	RemoveTopLevel bool   `yaml:"removetoplevel"`
+}
+
+type Blueprint struct {
+	Repo      string   `yaml:"repo"`
+	Steps     []string `yaml:"steps"`
+	Artifacts []string `yaml:"artifacts"`
 }
 
 type Settings struct {
@@ -37,8 +44,9 @@ type ManagerSettings struct {
 }
 
 type Lockfile struct {
-	Wares    map[string]LockedWare `yaml:"wares"`
-	Managers map[string][]string   `yaml:"managers"`
+	Wares      map[string]LockedWare      `yaml:"wares"`
+	Blueprints map[string]LockedBlueprint `yaml:"blueprints"`
+	Managers   map[string][]string        `yaml:"managers"`
 }
 
 type LockedWare struct {
@@ -46,6 +54,11 @@ type LockedWare struct {
 	Version string `yaml:"version"`
 	Asset   string `yaml:"asset"`
 	Digest  string `yaml:"digest"`
+}
+
+type LockedBlueprint struct {
+	Repo   string `yaml:"repo"`
+	Commit string `yaml:"commit"`
 }
 
 // MARK: Path functions
@@ -119,6 +132,10 @@ func LoadConfig() (*Config, error) {
 		cfg.Settings.Managers = map[string]ManagerSettings{}
 	}
 
+	if cfg.Blueprints == nil {
+		cfg.Blueprints = map[string]Blueprint{}
+	}
+
 	return &cfg, nil
 }
 
@@ -147,6 +164,10 @@ func LoadLock() (*Lockfile, error) {
 		lock.Managers = map[string][]string{}
 	}
 
+	if lock.Blueprints == nil {
+		lock.Blueprints = map[string]LockedBlueprint{}
+	}
+
 	return &lock, nil
 }
 
@@ -170,6 +191,10 @@ func SaveLock(lock *Lockfile) error {
 
 	if lock.Managers == nil {
 		lock.Managers = map[string][]string{}
+	}
+
+	if lock.Blueprints == nil {
+		lock.Blueprints = map[string]LockedBlueprint{}
 	}
 
 	data, err := yaml.Marshal(lock)
@@ -215,6 +240,10 @@ func SaveConfig(config *Config) error {
 
 	if config.Settings.Managers == nil {
 		config.Settings.Managers = map[string]ManagerSettings{}
+	}
+
+	if config.Blueprints == nil {
+		config.Blueprints = map[string]Blueprint{}
 	}
 
 	data, err := yaml.Marshal(config)
