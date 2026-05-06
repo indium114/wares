@@ -213,13 +213,19 @@ func Sync() error {
 		}
 	}
 
+	// Sync blueprints
+	bpChanged, err := SyncBlueprints(cfg, lock)
+	if err != nil {
+		return err
+	}
+
 	// Sync native managers
 	var mgrChanged bool
 	if mgrChanged, err = SyncManagers(cfg, lock); err != nil {
 		return err
 	}
 
-	changed = changed || mgrChanged
+	changed = changed || mgrChanged || bpChanged
 
 	// Remove orphaned packages
 	UninstallOrphans()

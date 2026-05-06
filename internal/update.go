@@ -50,6 +50,31 @@ func Update() error {
 		}
 	}
 
+	for name, bp := range cfg.Blueprints {
+		fmt.Printf("%s %s\n", UpdateText, name)
+
+		// pull latest
+		repoDir, err := ensureBlueprintRepo(bp.Repo)
+		if err != nil {
+			return err
+		}
+
+		// get commit
+		latest, err := resolveLatestCommit(repoDir)
+		if err != nil {
+			return err
+		}
+
+		// lock
+		locked := lock.Blueprints[name]
+		if locked.Commit != latest {
+			lock.Blueprints[name] = LockedBlueprint{
+				Repo:   bp.Repo,
+				Commit: latest,
+			}
+		}
+	}
+
 	if err := UpdateManagers(cfg, lock); err != nil {
 		return err
 	}

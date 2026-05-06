@@ -111,6 +111,22 @@ wares:
                                    # For example, using "*Linux-x86_64*" will match with any file containing the substring `Linux-x86_64` in its name
 ```
 
+### Installing packages from source
+
+`wares` can build and install packages from source through the `blueprint` system.
+
+In this example, I'll be installing [dotkeeper](https://github.com/indium114/dotkeeper) from source.
+
+```yaml
+blueprints:
+dotkeeper:
+	repo: "https://github.com/indium114/dotkeeper" # Full URL to repo
+		steps:                                       # Steps to build the project in bullet-point form
+			- "go build"
+		artifacts:                                   # Path of artifacts relative to the repo's root, in bullet-point form
+			- "dotkeeper"
+```
+
 ### Managing distro packages
 
 `wares` can manage your distro's package manager as well, allowing you to declaratively install packages from *apt*, *pacman*, *flatpak*, etc.

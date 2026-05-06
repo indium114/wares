@@ -31,7 +31,7 @@
 
 ## Needed for 0.6.0
 
-- [ ] `blueprint` system to compile projects from git repo source
+- [x] `blueprint` system to compile projects from git repo source
 	- Lock commit
 		- Checkout into detached commit before running build steps
 	- Specify repo root-relative path for symlinking build artifacts
