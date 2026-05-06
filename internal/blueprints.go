@@ -22,9 +22,28 @@ func ensureBlueprintRepo(repo string) (string, error) {
 
 	// ensure that repo exists (like the function name :P)
 	if _, err := os.Stat(filepath.Join(dir, ".git")); err == nil {
-		// pull latest changes
+		// checkout default branch
+		cmd := exec.Command("git", "-C", dir, "remote", "show", "origin")
+		out, err := cmd.Output()
+		defaultBranch := "main" // fallback
+		if err == nil {
+			for _, line := range strings.Split(string(out), "\n") {
+				if strings.Contains(line, "HEAD branch:") {
+					fields := strings.Fields(line)
+					if len(fields) > 0 {
+						defaultBranch = fields[len(fields)-1]
+					}
+					break
+				}
+			}
+		}
+		cmd = exec.Command("git", "-C", dir, "checkout", defaultBranch)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Run()
+
 		fmt.Printf("%s Pulling %s\n", HintText, repo)
-		cmd := exec.Command("git", "-C", dir, "pull", "origin")
+		cmd = exec.Command("git", "-C", dir, "pull", "origin")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
