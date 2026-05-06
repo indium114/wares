@@ -96,3 +96,55 @@ func linkBlueprintArtifacts(repoDir string, artifacts []string) error {
 
 	return nil
 }
+
+func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
+	changed := false
+
+	if lock.Blueprints == nil {
+		lock.Blueprints = map[string]LockedBlueprint{}
+	}
+
+	for name, bp := range cfg.Blueprints {
+		fmt.Printf("%s Building %s\n", SyncText, name)
+
+		// clone
+		repoDir, err := ensureBlueprintRepo(bp.Repo)
+		if err != nil {
+			return false, err
+		}
+
+		// get latest commit
+		commit, err := resolveLatestCommit(repoDir)
+		if err != nil {
+			return false, err
+		}
+
+		// don't unnecessarily rebuild
+		locked := lock.Blueprints[name]
+		needRebuild := locked.Commit != commit || locked.Repo != bp.Repo
+		if !needRebuild {
+			continue
+		}
+
+		// build
+		if err := buildBlueprint(repoDir, commit, bp.Steps); err != nil {
+			return false, err
+		}
+
+		// symlink
+		if err := linkBlueprintArtifacts(repoDir, bp.Artifacts); err != nil {
+			return false, err
+		}
+
+		// lock
+		lock.Blueprints[name] = LockedBlueprint{
+			Repo:   bp.Repo,
+			Commit: commit,
+		}
+		changed = true
+	}
+
+	// TODO: uninstall blueprints
+
+	return changed, nil
+}
