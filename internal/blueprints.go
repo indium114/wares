@@ -72,3 +72,27 @@ func buildBlueprint(repoDir, commit string, steps []string) error {
 
 	return nil
 }
+
+func linkBlueprintArtifacts(repoDir string, artifacts []string) error {
+	home, _ := os.UserHomeDir()
+	waresDir := filepath.Join(home, "Wares")
+
+	for _, artifact := range artifacts {
+		src := filepath.Join(repoDir, artifact)
+
+		if _, err := os.Stat(src); err != nil {
+			fmt.Printf("%s Artifact %s not found\n", ErrText, artifact)
+			return err
+		}
+
+		linkPath := filepath.Join(waresDir, filepath.Base(artifact))
+
+		os.Remove(linkPath)
+
+		if err := os.Symlink(src, linkPath); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
