@@ -12,7 +12,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	home, _ := os.UserHomeDir()
 	base := filepath.Join(home, ".local", "share", "wares")
 
-	lastSlash := strings.LastIndex(repo, "")
+	lastSlash := strings.LastIndex(repo, "/")
 	if lastSlash == -1 {
 		return "", fmt.Errorf("%s Invalid repo format %s", ErrText, repo)
 	}
