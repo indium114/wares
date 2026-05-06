@@ -48,3 +48,27 @@ func resolveLatestCommit(repoDir string) (string, error) {
 	}
 	return strings.TrimSpace(string(out)), nil
 }
+
+func buildBlueprint(repoDir, commit string, steps []string) error {
+	// checkout the locked commit
+	cmd := exec.Command("git", "-C", repoDir, "checkout", commit)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	// build the project according to steps
+	for _, step := range steps {
+		fmt.Printf("%s Build step: %s\n", LogText, step)
+		cmd := exec.Command("sh", "-c", step)
+		cmd.Dir = repoDir
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
