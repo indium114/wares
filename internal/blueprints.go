@@ -39,3 +39,12 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	}
 	return dir, nil
 }
+
+func resolveLatestCommit(repoDir string) (string, error) {
+	cmd := exec.Command("git", "-C", repoDir, "rev-parse", "HEAD")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
+}
