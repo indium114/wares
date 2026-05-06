@@ -12,8 +12,13 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	home, _ := os.UserHomeDir()
 	base := filepath.Join(home, ".local", "share", "wares")
 
-	parts := strings.Split(repo, "/")
-	dir := filepath.Join(base, parts[0], parts[1])
+	lastSlash := strings.LastIndex(repo, "")
+	if lastSlash == -1 {
+		return "", fmt.Errorf("%s Invalid repo format %s", ErrText, repo)
+	}
+	beforeSlash := repo[:lastSlash]
+	afterSlash := repo[lastSlash+1:]
+	dir := filepath.Join(base, beforeSlash, afterSlash)
 
 	// ensure that repo exists (like the function name :P)
 	if _, err := os.Stat(filepath.Join(dir, ".git")); err == nil {
