@@ -30,7 +30,7 @@ func Update() error {
 	}
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s %s\n", UpdateText, name)
+		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
 
 		latest, err := GetLatest(w.Repo)
 		if err != nil {
@@ -48,6 +48,8 @@ func Update() error {
 			l.Digest = ""
 			lock.Wares[name] = l
 		}
+
+		fmt.Printf("%s\n", l.Version)
 	}
 
 	for name, bp := range cfg.Blueprints {
