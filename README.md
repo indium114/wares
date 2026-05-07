@@ -119,12 +119,12 @@ In this example, I'll be installing [dotkeeper](https://github.com/indium114/dot
 
 ```yaml
 blueprints:
-dotkeeper:
-	repo: "https://github.com/indium114/dotkeeper" # Full URL to repo
-		steps:                                       # Steps to build the project in bullet-point form
-			- "go build"
-		artifacts:                                   # Path of artifacts relative to the repo's root, in bullet-point form
-			- "dotkeeper"
+  dotkeeper:
+    repo: "https://github.com/indium114/dotkeeper" # Full URL to repo
+    steps:                                         # Steps to build the project in bullet-point form
+      - "go build"
+    artifacts:                                     # Path of artifacts relative to the repo's root, in bullet-point form
+      - "dotkeeper"
 ```
 
 ### Managing distro packages
