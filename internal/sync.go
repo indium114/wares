@@ -87,7 +87,7 @@ func UninstallOrphans() error {
 		l := lock.Wares[name]
 
 		// remove symlink
-		if err := removeLink(name); err != nil {
+		if err := removeLink(name, l.System); err != nil {
 			return err
 		}
 
