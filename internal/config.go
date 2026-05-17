@@ -24,12 +24,14 @@ type Ware struct {
 	Multiple       bool   `yaml:"multiple"`
 	RemoveTopLevel bool   `yaml:"removetoplevel"`
 	Host           string `yaml:"host"`
+	System         bool   `yaml:"system"`
 }
 
 type Blueprint struct {
 	Repo      string   `yaml:"repo"`
 	Steps     []string `yaml:"steps"`
 	Artifacts []string `yaml:"artifacts"`
+	System    bool     `yaml:"system"`
 }
 
 type Settings struct {
