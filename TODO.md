@@ -39,6 +39,16 @@
 		- `steps:` to build
 		- `artifacts:` to symlink
 
+## Needed for 0.7.0
+
+- [ ] Allow installing a ware to `/Wares` by specifying `system: true`
+	- won't mesh well with multi-user systems but it's fine lol
+- [ ] Allow installling from a static URL
+	- Suggested by @ecficies in issue #18
+- [ ] Allow installing from Codeberg/Gitea release artifacts
+	- Suggested by @ecficies in issue #18
+	- figure out how the API works
+
 ## Not needed currently
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
