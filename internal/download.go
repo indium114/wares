@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -191,7 +192,7 @@ func Download(repo, release, pattern, host string) error {
 		var id string
 		for _, a := range data.Assets {
 			if wildcardMatch(pattern, a.Name) {
-				id = string(a.Id)
+				id = strconv.Itoa(a.Id)
 			}
 		}
 
@@ -199,7 +200,7 @@ func Download(repo, release, pattern, host string) error {
 		var downURL string
 		var filename string
 		for _, a := range data.Assets {
-			if string(a.Id) == id {
+			if strconv.Itoa(a.Id) == id {
 				downURL = a.URL
 				filename = a.Name
 			}
