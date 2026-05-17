@@ -158,13 +158,13 @@ func Download(repo, release, pattern, host string) error {
 		}
 	} else {
 		type asset struct {
-			Id   string `json:"id"`
+			Id   int    `json:"id"`
 			Name string `json:"name"`
 			UUID string `json:"uuid"`
 			URL  string `json:"browser_download_url"`
 		}
 		type giteaRelease struct {
-			Id     string  `json:"id"`
+			Id     int     `json:"id"`
 			Assets []asset `json:"assets"`
 		}
 
@@ -191,7 +191,7 @@ func Download(repo, release, pattern, host string) error {
 		var id string
 		for _, a := range data.Assets {
 			if wildcardMatch(pattern, a.Name) {
-				id = a.Id
+				id = string(a.Id)
 			}
 		}
 
@@ -199,7 +199,7 @@ func Download(repo, release, pattern, host string) error {
 		var downURL string
 		var filename string
 		for _, a := range data.Assets {
-			if a.Id == id {
+			if string(a.Id) == id {
 				downURL = a.URL
 				filename = a.Name
 			}
