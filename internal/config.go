@@ -57,15 +57,29 @@ type LockedWare struct {
 	Version string `yaml:"version"`
 	Asset   string `yaml:"asset"`
 	Digest  string `yaml:"digest"`
+	System  bool   `yaml:"system"`
 }
 
 type LockedBlueprint struct {
 	Repo      string   `yaml:"repo"`
 	Commit    string   `yaml:"commit"`
 	Artifacts []string `yaml:"artifacts"`
+	System    bool     `yaml:"system"`
 }
 
 // MARK: Path functions
+func WaresDir(system bool) (string, error) {
+	if system {
+		return "/Wares", nil
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, "Wares"), nil
+}
+
 func ConfigDir() (string, error) {
 	if dir := os.Getenv("XDG_CONFIG_HOME"); dir != "" {
 		return filepath.Join(dir, "wares"), nil
