@@ -41,6 +41,20 @@ var syncCmd = &cobra.Command{
 			return nil
 		})
 
+		fmt.Printf("%s Marking all files in /Wares as executable\n", internal.LogText)
+		err = filepath.Walk("/Wares", func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if !info.IsDir() {
+				mode := info.Mode()
+				return os.Chmod(path, mode|0111)
+			}
+
+			return nil
+		})
+
 		if err != nil {
 			fmt.Printf("%s Failed to mark files as executable: %s", internal.ErrText, err)
 			return err

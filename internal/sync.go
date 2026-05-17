@@ -12,6 +12,7 @@ type syncResult struct {
 	repo       string
 	version    string
 	linkSource string
+	system     bool
 }
 
 func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string, error) {
@@ -144,6 +145,7 @@ func Sync() error {
 				Version: rel,
 				Asset:   "", // will be filled after download
 				Digest:  "",
+				System:  w.System,
 			}
 
 			lock.Wares[name] = l
@@ -208,15 +210,16 @@ func Sync() error {
 			repo:       w.Repo,
 			version:    l.Version,
 			linkSource: linkSource,
+			system:     w.System,
 		})
 	}
 
 	for _, r := range results {
-		if err := removeLink(r.name); err != nil {
+		if err := removeLink(r.name, r.system); err != nil {
 			return err
 		}
 
-		if err := LinkWare(r.name, r.repo, r.version, r.linkSource); err != nil {
+		if err := LinkWare(r.name, r.repo, r.version, r.linkSource, r.system); err != nil {
 			return fmt.Errorf("%s: link: %w", r.name, err)
 		}
 	}

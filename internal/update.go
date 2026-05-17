@@ -6,13 +6,13 @@ import (
 	"path/filepath"
 )
 
-func removeLink(name string) error {
-	home, err := os.UserHomeDir()
+func removeLink(name string, system bool) error {
+	waresDir, err := WaresDir(system)
 	if err != nil {
 		return err
 	}
 
-	linkPath := filepath.Join(home, "Wares", name)
+	linkPath := filepath.Join(waresDir, name)
 
 	err = os.Remove(linkPath)
 	if err != nil && !os.IsNotExist(err) {
@@ -82,6 +82,7 @@ func Update() error {
 			lock.Blueprints[name] = LockedBlueprint{
 				Repo:   bp.Repo,
 				Commit: latest,
+				System: bp.System,
 			}
 		}
 	}
