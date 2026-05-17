@@ -79,9 +79,14 @@ var doctorCmd = &cobra.Command{
 		if _, err := os.Stat(sysWaresBin); os.IsNotExist(err) {
 			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, sysWaresBin)
 		}
-		err = os.MkdirAll(sysWaresBin, 0o755)
+		err = internal.Sudo("mkdir", "-p", "/Wares")
 		if err != nil {
-			fmt.Printf("%s Failed to create wares bin dir: %s\n", internal.ErrText, err)
+			fmt.Printf("%s Failed to create system wares bin dir: %s\n", internal.ErrText, err)
+			return err
+		}
+		err = internal.Sudo("chown", os.Getenv("USER"), "/Wares")
+		if err != nil {
+			fmt.Printf("%s Failed to chown system wares bin dir: %s\n", internal.ErrText, err)
 			return err
 		}
 		fmt.Printf("%s %s exists\n", internal.OkText, sysWaresBin)
