@@ -116,6 +116,32 @@ func GetLatest(repo string) (string, error) {
 
 }
 
+func downloadFile(downloadURL, dir, filename string) error {
+	// Download file
+	response, err := http.Get(downloadURL)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	// create destination file
+	path := filepath.Join(dir, filename)
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// copy response body to file
+	_, err = io.Copy(file, response.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Download(repo, release, pattern, host string) error {
 	dir, err := EnsureStoreDir(repo, release)
 	if err != nil {
@@ -131,7 +157,55 @@ func Download(repo, release, pattern, host string) error {
 			return err
 		}
 	} else {
+		type asset struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+			UUID string `json:"uuid"`
+			URL  string `json:"browser_download_url"`
+		}
+		type giteaRelease struct {
+			Id     string  `json:"id"`
+			Assets []asset `json:"assets"`
+		}
 
+		// get release id from tag
+		url := fmt.Sprintf("%s/api/v1/repos/%s/releases/tags/%s", host, repo, release)
+		response, err := http.Get(url)
+		if err != nil {
+			return err
+		}
+		defer response.Body.Close()
+
+		body, err := io.ReadAll(response.Body)
+		if err != nil {
+			return err
+		}
+
+		var data giteaRelease
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			return err
+		}
+
+		// get asset url by matching against pattern
+		var id string
+		for _, a := range data.Assets {
+			if wildcardMatch(pattern, a.Name) {
+				id = a.Id
+			}
+		}
+
+		// download asset
+		var downURL string
+		var filename string
+		for _, a := range data.Assets {
+			if a.Id == id {
+				downURL = a.URL
+				filename = a.Name
+			}
+		}
+
+		return downloadFile(downURL, dir, filename)
 	}
 
 	return nil
