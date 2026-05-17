@@ -283,7 +283,7 @@ func SaveConfig(config *Config) error {
 	return nil
 }
 
-func LinkWare(name, repo, version, asset string) error {
+func LinkWare(name, repo, version, asset string, system bool) error {
 	// resolve store directory
 	dir, err := EnsureStoreDir(repo, version)
 	if err != nil {
@@ -298,12 +298,12 @@ func LinkWare(name, repo, version, asset string) error {
 	}
 
 	// resolve symlink location
-	home, err := os.UserHomeDir()
+	waresDir, err := WaresDir(system)
 	if err != nil {
 		return err
 	}
 
-	linkPath := filepath.Join(home, "Wares", name)
+	linkPath := filepath.Join(waresDir, name)
 
 	// ensure parent directory exists
 	if err := os.MkdirAll(filepath.Dir(linkPath), 0o755); err != nil {
