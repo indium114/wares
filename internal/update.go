@@ -32,9 +32,18 @@ func Update() error {
 	for name, w := range cfg.Wares {
 		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
 
-		latest, err := GetLatest(w.Repo)
-		if err != nil {
-			return err
+		var latest string
+		if w.Host == "" || w.Host == "https://github.com" {
+			latest, err = GetLatest(w.Repo)
+			if err != nil {
+				return err
+			}
+		} else {
+			latest, err = GiteaGetLatest(w.Host, w.Repo)
+			if err != nil {
+				return err
+			}
+
 		}
 
 		l, ok := lock.Wares[name]

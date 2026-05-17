@@ -23,6 +23,7 @@ type Ware struct {
 	Name           string `yaml:"name"`
 	Multiple       bool   `yaml:"multiple"`
 	RemoveTopLevel bool   `yaml:"removetoplevel"`
+	Host           string `yaml:"host"`
 }
 
 type Blueprint struct {

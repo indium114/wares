@@ -116,18 +116,22 @@ func GetLatest(repo string) (string, error) {
 
 }
 
-func Download(repo, release, pattern string) error {
+func Download(repo, release, pattern, host string) error {
 	dir, err := EnsureStoreDir(repo, release)
 	if err != nil {
 		return err
 	}
 
-	command := exec.Command("gh", "release", "download", "--repo", repo, "--pattern", pattern, "--dir", dir, release, "--clobber")
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
-	err = command.Run()
-	if err != nil {
-		return err
+	if host == "" || host == "https://github.com" {
+		command := exec.Command("gh", "release", "download", "--repo", repo, "--pattern", pattern, "--dir", dir, release, "--clobber")
+		command.Stdout = os.Stdout
+		command.Stderr = os.Stderr
+		err = command.Run()
+		if err != nil {
+			return err
+		}
+	} else {
+
 	}
 
 	return nil

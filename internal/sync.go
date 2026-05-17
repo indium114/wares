@@ -126,9 +126,17 @@ func Sync() error {
 
 		// Missing lock entry → resolve latest
 		if !ok || l.Version == "" {
-			rel, err := GetLatest(w.Repo)
-			if err != nil {
-				return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+			var rel string
+			if w.Host == "" || w.Host == "https://github.com" {
+				rel, err = GetLatest(w.Repo)
+				if err != nil {
+					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+				}
+			} else {
+				rel, err = GiteaGetLatest(w.Host, w.Repo)
+				if err != nil {
+					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+				}
 			}
 
 			l = LockedWare{
@@ -147,7 +155,7 @@ func Sync() error {
 		}
 
 		// Download
-		if err := Download(w.Repo, l.Version, w.Asset); err != nil {
+		if err := Download(w.Repo, l.Version, w.Asset, w.Host); err != nil {
 			return err
 		}
 
