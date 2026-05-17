@@ -2,6 +2,9 @@ package internal
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -68,6 +71,33 @@ func GetReleases(repo string) ([]Release, error) {
 	}
 	return data, nil
 
+}
+
+func GiteaGetLatest(host, repo string) (string, error) {
+	url := fmt.Sprintf("%s/api/v1/repos/%s/releases/latest", host, repo)
+	fmt.Println(url)
+	response, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	type GiteaRelease struct {
+		TagName string `json:"tag_name"`
+	}
+
+	var data GiteaRelease
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return "", err
+	}
+
+	return data.TagName, nil
 }
 
 func GetLatest(repo string) (string, error) {
