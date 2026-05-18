@@ -61,10 +61,11 @@ type LockedWare struct {
 }
 
 type LockedBlueprint struct {
-	Repo      string   `yaml:"repo"`
-	Commit    string   `yaml:"commit"`
-	Artifacts []string `yaml:"artifacts"`
-	System    bool     `yaml:"system"`
+	Repo        string   `yaml:"repo"`
+	Commit      string   `yaml:"commit"`
+	BuiltCommit string   `yaml:"builtcommit"`
+	Artifacts   []string `yaml:"artifacts"`
+	System      bool     `yaml:"system"`
 }
 
 // MARK: Path functions

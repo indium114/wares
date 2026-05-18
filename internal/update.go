@@ -80,9 +80,10 @@ func Update() error {
 		locked := lock.Blueprints[name]
 		if locked.Commit != latest {
 			lock.Blueprints[name] = LockedBlueprint{
-				Repo:   bp.Repo,
-				Commit: latest,
-				System: bp.System,
+				Repo:        bp.Repo,
+				Commit:      latest,
+				BuiltCommit: locked.BuiltCommit,
+				System:      bp.System,
 			}
 		}
 	}

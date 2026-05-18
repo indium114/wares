@@ -202,7 +202,7 @@ func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
 
 		// don't unnecessarily rebuild
 		locked := lock.Blueprints[name]
-		needRebuild := locked.Commit != commit || locked.Repo != bp.Repo
+		needRebuild := locked.BuiltCommit != commit || locked.Repo != bp.Repo
 		if !needRebuild {
 			continue
 		}
@@ -219,10 +219,11 @@ func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
 
 		// lock
 		lock.Blueprints[name] = LockedBlueprint{
-			Repo:      bp.Repo,
-			Commit:    commit,
-			Artifacts: bp.Artifacts,
-			System:    bp.System,
+			Repo:        bp.Repo,
+			Commit:      commit,
+			BuiltCommit: commit,
+			Artifacts:   bp.Artifacts,
+			System:      bp.System,
 		}
 		changed = true
 	}
