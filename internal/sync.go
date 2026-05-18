@@ -12,6 +12,7 @@ type syncResult struct {
 	repo       string
 	version    string
 	linkSource string
+	system     bool
 }
 
 func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string, error) {
@@ -86,7 +87,7 @@ func UninstallOrphans() error {
 		l := lock.Wares[name]
 
 		// remove symlink
-		if err := removeLink(name); err != nil {
+		if err := removeLink(name, l.System); err != nil {
 			return err
 		}
 
@@ -126,9 +127,17 @@ func Sync() error {
 
 		// Missing lock entry → resolve latest
 		if !ok || l.Version == "" {
-			rel, err := GetLatest(w.Repo)
-			if err != nil {
-				return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+			var rel string
+			if w.Host == "" || w.Host == "https://github.com" {
+				rel, err = GetLatest(w.Repo)
+				if err != nil {
+					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+				}
+			} else {
+				rel, err = GiteaGetLatest(w.Host, w.Repo)
+				if err != nil {
+					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+				}
 			}
 
 			l = LockedWare{
@@ -136,6 +145,7 @@ func Sync() error {
 				Version: rel,
 				Asset:   "", // will be filled after download
 				Digest:  "",
+				System:  w.System,
 			}
 
 			lock.Wares[name] = l
@@ -147,7 +157,7 @@ func Sync() error {
 		}
 
 		// Download
-		if err := Download(w.Repo, l.Version, w.Asset); err != nil {
+		if err := Download(w.Repo, l.Version, w.Asset, w.Host); err != nil {
 			return err
 		}
 
@@ -200,15 +210,16 @@ func Sync() error {
 			repo:       w.Repo,
 			version:    l.Version,
 			linkSource: linkSource,
+			system:     w.System,
 		})
 	}
 
 	for _, r := range results {
-		if err := removeLink(r.name); err != nil {
+		if err := removeLink(r.name, r.system); err != nil {
 			return err
 		}
 
-		if err := LinkWare(r.name, r.repo, r.version, r.linkSource); err != nil {
+		if err := LinkWare(r.name, r.repo, r.version, r.linkSource, r.system); err != nil {
 			return fmt.Errorf("%s: link: %w", r.name, err)
 		}
 	}

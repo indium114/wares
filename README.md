@@ -160,6 +160,41 @@ managers:
     - "net.nokyan.Resources" # Package to install
 ```
 
+### Installing packages system-wide
+
+To install a *ware* or *blueprint* system-wide, simply add `system: true` to its definition.
+
+Ensure that `wares doctor` is run before installing a system-wide ware or blueprint for the first time.
+
+In this example, I'll be installing Cubyz system-wide.
+
+```yaml
+wares:
+  Cubyz:
+    name: Cubyz
+    repo: pixelguys/cubyz
+    multiple: true
+    asset: "Linux-x86_64.tar.gz"
+    system: true # set this to install system-wide
+```
+
+### Installing packages from Codeberg or other Forgejo instances
+
+You can install wares from *Codeberg* or other *Forgejo* instances that expose the Forgejo API.
+
+You can do this be setting the `host:` value of the ware definition to the URL to the host, like `https://codeberg.org`.
+
+In this example, I'll be installing the [Forgejo CLI](https://codeberg.org/forgejo-contrib/forgejo-cli) from Codeberg.
+
+```yaml
+wares:
+  fj:
+    name: fj
+    repo: forgejo-contrib/forgejo-cli
+    asset: "*x86_64-linux.tar.gz"
+    host: https://codeberg.org # this is the important part
+```
+
 ### Updating packages
 
 To update packages, run the following command:

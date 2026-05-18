@@ -75,7 +75,21 @@ var doctorCmd = &cobra.Command{
 			fmt.Printf("%s Failed to create wares bin dir: %s\n", internal.ErrText, err)
 			return err
 		}
-		fmt.Printf("%s %s exists\n", internal.OkText, waresBin)
+		sysWaresBin := "/Wares"
+		if _, err := os.Stat(sysWaresBin); os.IsNotExist(err) {
+			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, sysWaresBin)
+		}
+		err = internal.Sudo("mkdir", "-p", "/Wares")
+		if err != nil {
+			fmt.Printf("%s Failed to create system wares bin dir: %s\n", internal.ErrText, err)
+			return err
+		}
+		err = internal.Sudo("chown", os.Getenv("USER"), "/Wares")
+		if err != nil {
+			fmt.Printf("%s Failed to chown system wares bin dir: %s\n", internal.ErrText, err)
+			return err
+		}
+		fmt.Printf("%s %s exists\n", internal.OkText, sysWaresBin)
 
 		path := os.Getenv("PATH")
 		if !strings.Contains(path, waresBin) {
@@ -83,6 +97,11 @@ var doctorCmd = &cobra.Command{
 			return err
 		}
 		fmt.Printf("%s %s is in PATH\n", internal.OkText, waresBin)
+		if !strings.Contains(path, sysWaresBin) {
+			fmt.Printf("%s %s not in PATH\n", internal.ErrText, sysWaresBin)
+			return err
+		}
+		fmt.Printf("%s %s is in PATH\n", internal.OkText, sysWaresBin)
 
 		// MARK: Check for Wares config directory
 		waresConfig, _ := internal.ConfigDir()

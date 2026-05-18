@@ -6,13 +6,13 @@ import (
 	"path/filepath"
 )
 
-func removeLink(name string) error {
-	home, err := os.UserHomeDir()
+func removeLink(name string, system bool) error {
+	waresDir, err := WaresDir(system)
 	if err != nil {
 		return err
 	}
 
-	linkPath := filepath.Join(home, "Wares", name)
+	linkPath := filepath.Join(waresDir, name)
 
 	err = os.Remove(linkPath)
 	if err != nil && !os.IsNotExist(err) {
@@ -32,9 +32,18 @@ func Update() error {
 	for name, w := range cfg.Wares {
 		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
 
-		latest, err := GetLatest(w.Repo)
-		if err != nil {
-			return err
+		var latest string
+		if w.Host == "" || w.Host == "https://github.com" {
+			latest, err = GetLatest(w.Repo)
+			if err != nil {
+				return err
+			}
+		} else {
+			latest, err = GiteaGetLatest(w.Host, w.Repo)
+			if err != nil {
+				return err
+			}
+
 		}
 
 		l, ok := lock.Wares[name]
@@ -71,8 +80,10 @@ func Update() error {
 		locked := lock.Blueprints[name]
 		if locked.Commit != latest {
 			lock.Blueprints[name] = LockedBlueprint{
-				Repo:   bp.Repo,
-				Commit: latest,
+				Repo:        bp.Repo,
+				Commit:      latest,
+				BuiltCommit: locked.BuiltCommit,
+				System:      bp.System,
 			}
 		}
 	}

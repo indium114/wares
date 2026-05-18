@@ -23,12 +23,15 @@ type Ware struct {
 	Name           string `yaml:"name"`
 	Multiple       bool   `yaml:"multiple"`
 	RemoveTopLevel bool   `yaml:"removetoplevel"`
+	Host           string `yaml:"host"`
+	System         bool   `yaml:"system"`
 }
 
 type Blueprint struct {
 	Repo      string   `yaml:"repo"`
 	Steps     []string `yaml:"steps"`
 	Artifacts []string `yaml:"artifacts"`
+	System    bool     `yaml:"system"`
 }
 
 type Settings struct {
@@ -54,15 +57,30 @@ type LockedWare struct {
 	Version string `yaml:"version"`
 	Asset   string `yaml:"asset"`
 	Digest  string `yaml:"digest"`
+	System  bool   `yaml:"system"`
 }
 
 type LockedBlueprint struct {
-	Repo      string   `yaml:"repo"`
-	Commit    string   `yaml:"commit"`
-	Artifacts []string `yaml:"artifacts"`
+	Repo        string   `yaml:"repo"`
+	Commit      string   `yaml:"commit"`
+	BuiltCommit string   `yaml:"builtcommit"`
+	Artifacts   []string `yaml:"artifacts"`
+	System      bool     `yaml:"system"`
 }
 
 // MARK: Path functions
+func WaresDir(system bool) (string, error) {
+	if system {
+		return "/Wares", nil
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(home, "Wares"), nil
+}
+
 func ConfigDir() (string, error) {
 	if dir := os.Getenv("XDG_CONFIG_HOME"); dir != "" {
 		return filepath.Join(dir, "wares"), nil
@@ -266,7 +284,7 @@ func SaveConfig(config *Config) error {
 	return nil
 }
 
-func LinkWare(name, repo, version, asset string) error {
+func LinkWare(name, repo, version, asset string, system bool) error {
 	// resolve store directory
 	dir, err := EnsureStoreDir(repo, version)
 	if err != nil {
@@ -281,12 +299,12 @@ func LinkWare(name, repo, version, asset string) error {
 	}
 
 	// resolve symlink location
-	home, err := os.UserHomeDir()
+	waresDir, err := WaresDir(system)
 	if err != nil {
 		return err
 	}
 
-	linkPath := filepath.Join(home, "Wares", name)
+	linkPath := filepath.Join(waresDir, name)
 
 	// ensure parent directory exists
 	if err := os.MkdirAll(filepath.Dir(linkPath), 0o755); err != nil {

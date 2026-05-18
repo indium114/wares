@@ -16,7 +16,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	if lastSlash == -1 {
 		return "", fmt.Errorf("%s Invalid repo format %s", ErrText, repo)
 	}
-	beforeSlash := repo[:lastSlash]
+	beforeSlash := strings.TrimPrefix(repo[:lastSlash], "https://")
 	afterSlash := repo[lastSlash+1:]
 	dir := filepath.Join(base, beforeSlash, afterSlash)
 
@@ -97,9 +97,11 @@ func buildBlueprint(repoDir, commit string, steps []string) error {
 	return nil
 }
 
-func linkBlueprintArtifacts(repoDir string, artifacts []string) error {
-	home, _ := os.UserHomeDir()
-	waresDir := filepath.Join(home, "Wares")
+func linkBlueprintArtifacts(repoDir string, artifacts []string, system bool) error {
+	waresDir, err := WaresDir(system)
+	if err != nil {
+		return err
+	}
 
 	for _, artifact := range artifacts {
 		src := filepath.Join(repoDir, artifact)
@@ -143,8 +145,10 @@ func uninstallBlueprintOrphans(cfg *Config, lock *Lockfile) (bool, error) {
 		locked := lock.Blueprints[name]
 
 		// unlink
-		home, _ := os.UserHomeDir()
-		waresDir := filepath.Join(home, "Wares")
+		waresDir, err := WaresDir(locked.System)
+		if err != nil {
+			return false, err
+		}
 		for _, artifact := range locked.Artifacts {
 			linkPath := filepath.Join(waresDir, filepath.Base(artifact))
 			if err := os.Remove(linkPath); err != nil {
@@ -198,7 +202,7 @@ func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
 
 		// don't unnecessarily rebuild
 		locked := lock.Blueprints[name]
-		needRebuild := locked.Commit != commit || locked.Repo != bp.Repo
+		needRebuild := locked.BuiltCommit != commit || locked.Repo != bp.Repo
 		if !needRebuild {
 			continue
 		}
@@ -209,15 +213,17 @@ func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
 		}
 
 		// symlink
-		if err := linkBlueprintArtifacts(repoDir, bp.Artifacts); err != nil {
+		if err := linkBlueprintArtifacts(repoDir, bp.Artifacts, bp.System); err != nil {
 			return false, err
 		}
 
 		// lock
 		lock.Blueprints[name] = LockedBlueprint{
-			Repo:      bp.Repo,
-			Commit:    commit,
-			Artifacts: bp.Artifacts,
+			Repo:        bp.Repo,
+			Commit:      commit,
+			BuiltCommit: commit,
+			Artifacts:   bp.Artifacts,
+			System:      bp.System,
 		}
 		changed = true
 	}
