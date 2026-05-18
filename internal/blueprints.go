@@ -16,7 +16,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	if lastSlash == -1 {
 		return "", fmt.Errorf("%s Invalid repo format %s", ErrText, repo)
 	}
-	beforeSlash := repo[:lastSlash]
+	beforeSlash := strings.TrimPrefix(repo[:lastSlash], "https://")
 	afterSlash := repo[lastSlash+1:]
 	dir := filepath.Join(base, beforeSlash, afterSlash)
 
