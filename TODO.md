@@ -47,7 +47,7 @@
 	- Suggested by @ecficies in issue #18
 	- figure out how the API works
 
-## Needed for 0.7.1
+## Needed for 0.7.2
 
 - [ ] Allow installling from a static URL
 	- Suggested by @ecficies in issue #18
