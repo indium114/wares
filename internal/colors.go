@@ -14,4 +14,5 @@ var (
 	CleanText  string = color.CyanString("[CLEAN]")
 	AddText    string = color.HiMagentaString("[ADD]")
 	HintText   string = color.HiCyanString("[HINT]")
+	QueryText  string = color.HiBlueString("[QUERY]")
 )
