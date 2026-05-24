@@ -47,7 +47,7 @@
 	- Suggested by @ecficies in issue #18
 	- figure out how the API works
 
-## Needed for 0.7.2
+## Needed for 0.8.0
 
 - [ ] `wares shell` command that reads `./waresfile.yaml`, symlinks to `./.wares`, and adds `./.wares` to `$PATH` in a new `$SHELL`
 
