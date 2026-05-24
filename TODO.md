@@ -49,7 +49,7 @@
 
 ## Needed for 0.8.0
 
-- [ ] `wares shell` command that reads `./waresfile.yaml`, symlinks to `./.wares`, and adds `./.wares` to `$PATH` in a new `$SHELL`
+- [x] `wares shell` command that reads `./waresfile.yaml`, symlinks to `./.wares`, and adds `./.wares` to `$PATH` in a new `$SHELL`
 
 ## Not needed currently
 
