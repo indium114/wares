@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
@@ -47,12 +48,18 @@ var shellCmd = &cobra.Command{
 			shell = "/bin/sh"
 		}
 
-		newPath := shellDir + ":" + os.Getenv("PATH")
-
 		fmt.Printf("%s Entering wares shell\n", internal.HintText)
 
+		newEnv := os.Environ()
+		for i, e := range newEnv {
+			if strings.HasPrefix(e, "PATH=") {
+				newEnv[i] = "PATH=" + shellDir + ":" + e[len("PATH"):]
+				break
+			}
+		}
+
 		sh := exec.Command(shell)
-		sh.Env = append(os.Environ(), "PATH"+newPath)
+		sh.Env = newEnv
 		sh.Stdin = os.Stdin
 		sh.Stdout = os.Stdout
 		sh.Stderr = os.Stderr
