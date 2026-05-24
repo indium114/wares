@@ -220,6 +220,7 @@ func ShellUpdate(dir string) error {
 				Repo:        bp.Repo,
 				Commit:      latest,
 				BuiltCommit: locked.BuiltCommit,
+				Artifacts:   locked.Artifacts,
 			}
 			changed = true
 		}
