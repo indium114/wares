@@ -167,7 +167,7 @@ func ShellUpdate(dir string) error {
 	changed := false
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s %s %s ->", UpdateText, name, lock.Wares[name].Version)
+		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
 
 		l, ok := lock.Wares[name]
 		if !ok {
