@@ -101,3 +101,30 @@ func SaveShellLock(dir string, lock *Lockfile) error {
 
 	return nil
 }
+
+func shellWaresDir(absDir string) string {
+	return filepath.Join(absDir, ".wares")
+}
+
+func shellSymlinkWare(name, repo, version, linkSource, shellDir string) error {
+	storeDir, err := EnsureStoreDir(repo, version)
+	if err != nil {
+		return err
+	}
+
+	target := filepath.Join(storeDir, linkSource)
+
+	if _, err := os.Stat(target); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(shellDir, 0o755); err != nil {
+		return err
+	}
+
+	linkPath := filepath.Join(shellDir, name)
+
+	os.Remove(linkPath)
+
+	return os.Symlink(target, linkPath)
+}
