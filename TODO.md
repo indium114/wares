@@ -49,8 +49,7 @@
 
 ## Needed for 0.7.2
 
-- [ ] Allow installling from a static URL
-	- Suggested by @ecficies in issue #18
+- [ ] `wares shell` command that reads `./waresfile.yaml`, symlinks to `./.wares`, and adds `./.wares` to `$PATH` in a new `$SHELL`
 
 ## Not needed currently
 
@@ -58,3 +57,5 @@
 - [ ] Explore configuring in `kdl` rather than `yaml`
 - [x] Logo
 - [ ] Explore support for downloading artifacts from *codeberg* releases
+- [ ] Allow installling from a static URL
+	- Suggested by @ecficies in issue #18
