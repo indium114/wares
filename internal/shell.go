@@ -70,3 +70,34 @@ func LoadShellLock(dir string) (*Lockfile, error) {
 
 	return &lock, nil
 }
+
+func SaveShellLock(dir string, lock *Lockfile) error {
+	path := filepath.Join(dir, "wares.lock")
+	tmp := path + ".tmp"
+
+	if lock.Wares == nil {
+		lock.Wares = map[string]LockedWare{}
+	}
+	if lock.Blueprints == nil {
+		lock.Blueprints = map[string]LockedBlueprint{}
+	}
+	if lock.Managers == nil {
+		lock.Managers = map[string][]string{}
+	}
+
+	data, err := yaml.Marshal(lock)
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+
+	if err := os.Rename(tmp, path); err != nil {
+		os.Remove(tmp)
+		return err
+	}
+
+	return nil
+}
