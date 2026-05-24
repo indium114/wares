@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ProtonMail/go-crypto/openpgp/symmetric"
 	"github.com/goccy/go-yaml"
 )
 
