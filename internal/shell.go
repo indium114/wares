@@ -128,3 +128,21 @@ func shellSymlinkWare(name, repo, version, linkSource, shellDir string) error {
 
 	return os.Symlink(target, linkPath)
 }
+
+func shellSymlinkBlueprint(artifact, repoDir string, shellDir string) error {
+	src := filepath.Join(repoDir, artifact)
+
+	if _, err := os.Stat(src); err != nil {
+		return fmt.Errorf("%s artifact %s not found", ErrText, artifact)
+	}
+
+	if err := os.MkdirAll(shellDir, 0o755); err != nil {
+		return err
+	}
+
+	linkPath := filepath.Join(shellDir, filepath.Base(artifact))
+
+	os.Remove(linkPath)
+
+	return os.Symlink(src, linkPath)
+}
