@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/ProtonMail/go-crypto/openpgp/symmetric"
 	"github.com/goccy/go-yaml"
 )
 
@@ -201,7 +203,7 @@ func ShellUpdate(dir string) error {
 	}
 
 	for name, bp := range cfg.Blueprints {
-		fmt.Printf("%s %s", UpdateText, name)
+		fmt.Printf("%s %s\n", UpdateText, name)
 
 		repoDir, err := ensureBlueprintRepo(bp.Repo)
 		if err != nil {
@@ -223,6 +225,149 @@ func ShellUpdate(dir string) error {
 			changed = true
 		}
 	}
+
+	if changed {
+		return SaveShellLock(absDir, lock)
+	}
+
+	return nil
+}
+
+func ShellSync(dir string) error {
+	absDir, err := filepath.Abs(dir)
+	if err != nil {
+		return err
+	}
+
+	cfg, err := LoadShellConfig(absDir)
+	if err != nil {
+		return err
+	}
+
+	lock, err := LoadShellLock(absDir)
+	if err != nil {
+		return err
+	}
+
+	shellDir := shellWaresDir(absDir)
+	changed := false
+
+	var results []syncResult
+
+	for name, w := range cfg.Wares {
+		fmt.Printf("%s Installing %s\n", SyncText, name)
+
+		l, ok := lock.Wares[name]
+		if !ok || l.Version == "" {
+			return fmt.Errorf("%s %s not locked yet, run 'wares shell --update' first", ErrText, name)
+		}
+
+		if err := CleanDir(w.Repo, l.Version); err != nil {
+			return err
+		}
+
+		if err := Download(w.Repo, l.Version, w.Asset, w.Host); err != nil {
+			return err
+		}
+
+		path, err := ResolveDownloadedPath(w.Repo, l.Version, w.Asset, w.Multiple)
+		if err != nil {
+			return err
+		}
+
+		digest, err := ComputeDigest(path)
+		if err != nil {
+			return err
+		}
+
+		if l.Digest == "" {
+			l.Digest = "sha256:" + digest
+			l.Asset = filepath.Base(path)
+			lock.Wares[name] = l
+			changed = true
+		} else {
+			expected := strings.TrimPrefix(l.Digest, "sha256:")
+			if expected != digest {
+				return fmt.Errorf("%s digest mismatch", name)
+			}
+		}
+
+		if archive, kind := IsArchive(path); archive {
+			if err := Extract(path, filepath.Dir(path), kind, w.RemoveTopLevel); err != nil {
+				return err
+			}
+		}
+
+		var linkSource string
+		if archive, _ := IsArchive(path); archive {
+			linkSource = w.Name
+		} else {
+			linkSource = l.Asset
+		}
+
+		if w.Multiple {
+			linkSource = filepath.Dir(linkSource)
+		}
+
+		results = append(results, syncResult{
+			name:       name,
+			repo:       w.Repo,
+			version:    l.Version,
+			linkSource: linkSource,
+		})
+	}
+
+	for _, r := range results {
+		linkPath := filepath.Join(shellDir, r.name)
+		os.Remove(linkPath)
+
+		if err := shellSymlinkWare(r.name, r.repo, r.version, r.linkSource, shellDir); err != nil {
+			return err
+		}
+	}
+
+	for name, bp := range cfg.Blueprints {
+		fmt.Printf("%s Building %s\n", SyncText, name)
+
+		repoDir, err := ensureBlueprintRepo(bp.Repo)
+		if err != nil {
+			return err
+		}
+
+		locked, ok := lock.Blueprints[name]
+		if !ok || locked.Commit == "" {
+			return fmt.Errorf("%s %s not locked yet, run 'wares shell --update' first", ErrText, name)
+		}
+
+		needRebuild := locked.BuiltCommit != locked.Commit || locked.Repo != bp.Repo
+		if needRebuild {
+			if err := buildBlueprint(repoDir, locked.Commit, bp.Steps); err != nil {
+				return err
+			}
+
+			lock.Blueprints[name] = LockedBlueprint{
+				Repo:        bp.Repo,
+				Commit:      locked.Commit,
+				BuiltCommit: locked.Commit,
+				Artifacts:   bp.Artifacts,
+			}
+			changed = true
+		}
+
+		for _, artifact := range bp.Artifacts {
+			if err := shellSymlinkBlueprint(artifact, repoDir, shellDir); err != nil {
+				return err
+			}
+		}
+	}
+
+	fmt.Printf("%s Marking all files in %s as executable\n", LogText, shellDir)
+	filepath.Walk(shellDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() {
+			return nil
+		}
+		return os.Chmod(path, info.Mode()|0111)
+	})
 
 	if changed {
 		return SaveShellLock(absDir, lock)
