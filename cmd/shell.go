@@ -49,7 +49,7 @@ var shellCmd = &cobra.Command{
 
 		newPath := shellDir + ":" + os.Getenv("PATH")
 
-		fmt.Printf("%s Entering wares shell", internal.HintText)
+		fmt.Printf("%s Entering wares shell\n", internal.HintText)
 
 		sh := exec.Command(shell)
 		sh.Env = append(os.Environ(), "PATH"+newPath)
