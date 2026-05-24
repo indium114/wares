@@ -146,3 +146,87 @@ func shellSymlinkBlueprint(artifact, repoDir string, shellDir string) error {
 
 	return os.Symlink(src, linkPath)
 }
+
+func ShellUpdate(dir string) error {
+	absDir, err := filepath.Abs(dir)
+	if err != nil {
+		return err
+	}
+
+	cfg, err := LoadShellConfig(absDir)
+	if err != nil {
+		return err
+	}
+
+	lock, err := LoadShellLock(absDir)
+	if err != nil {
+		return err
+	}
+
+	changed := false
+
+	for name, w := range cfg.Wares {
+		fmt.Printf("%s %s %s ->", UpdateText, name, lock.Wares[name].Version)
+
+		l, ok := lock.Wares[name]
+		if !ok {
+			l = LockedWare{}
+		}
+
+		var latest string
+		if w.Host == "" || w.Host == "https://github.com" {
+			latest, err = GetLatest(w.Repo)
+			if err != nil {
+				return err
+			}
+		} else {
+			latest, err = GiteaGetLatest(w.Host, w.Repo)
+			if err != nil {
+				return err
+			}
+		}
+
+		if l.Version != latest {
+			l = LockedWare{
+				Repo:    w.Repo,
+				Version: latest,
+				Asset:   "",
+				Digest:  "",
+			}
+			lock.Wares[name] = l
+			changed = true
+		}
+
+		fmt.Printf("%s\n", l.Version)
+	}
+
+	for name, bp := range cfg.Blueprints {
+		fmt.Printf("%s %s", UpdateText, name)
+
+		repoDir, err := ensureBlueprintRepo(bp.Repo)
+		if err != nil {
+			return err
+		}
+
+		latest, err := resolveLatestCommit(repoDir)
+		if err != nil {
+			return err
+		}
+
+		locked := lock.Blueprints[name]
+		if locked.Commit != latest {
+			lock.Blueprints[name] = LockedBlueprint{
+				Repo:        bp.Repo,
+				Commit:      latest,
+				BuiltCommit: locked.BuiltCommit,
+			}
+			changed = true
+		}
+	}
+
+	if changed {
+		return SaveShellLock(absDir, lock)
+	}
+
+	return nil
+}
