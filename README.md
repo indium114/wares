@@ -208,3 +208,33 @@ This will update the version in `pallet.lock`. Now just sync to install the new 
 ```shell
 wares sync
 ```
+
+### wares shells
+
+`wares shells` allow you to create temporary environments with tools installed that you don't want on your global system, a la *Nix Shells*.
+
+To start, create `waresfile.yaml` in the root of your project.
+
+Fill it out as you would with wares' `config.yaml` file.
+
+> [!NOTE]
+> managers are not and will not be supported inside wares shells.
+
+In this example, I'll be installing [Just](https://github.com/casey/just) in a `wares shell`.
+
+```yaml
+wares:
+  just:
+    name: just
+    repo: casey/just
+    asset: just-*-x86_64-unknown-linux-musl.tar.gz
+```
+
+Run the following command to enter the wares shell:
+
+```shell
+wares shell
+```
+
+> [!NOTE]
+> The first time you enter the shell, you'll need to run `wares shell --update` instead.
