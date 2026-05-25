@@ -51,6 +51,10 @@
 
 - [x] `wares shell` command that reads `./waresfile.yaml`, symlinks to `./.wares`, and adds `./.wares` to `$PATH` in a new `$SHELL`
 
+## Needed for 0.8.1
+
+- [ ] Set `$WARES_SHELL_ACTIVE` variable upon entering wares shell, and unset when leaving shell
+
 ## Not needed currently
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
