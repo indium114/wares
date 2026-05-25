@@ -1,0 +1,15 @@
+wares:
+  just:
+    name: just
+    repo: casey/just
+    asset: "just-*-x86_64-unknown-linux-musl.tar.gz"
+
+blueprints:
+  go:
+    repo: ""
+    steps:
+      - "aria2c https://go.dev/dl/go1.26.3.linux-amd64.tar.gz || wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz"
+      - "tar xzvf go1.26.3.linux-amd64.tar.gz"
+    artifacts:
+      - "go/bin/go"
+      - "go/bin/gofmt"
