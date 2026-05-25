@@ -57,6 +57,7 @@ var shellCmd = &cobra.Command{
 				break
 			}
 		}
+		newEnv = append(newEnv, "WARES_SHELL_ACTIVE=true")
 
 		sh := exec.Command(shell)
 		sh.Env = newEnv
