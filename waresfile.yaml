@@ -6,7 +6,7 @@ wares:
 
 blueprints:
   go:
-    repo: ""
+    repo: "https://codeberg.org/indium114/blank-repo"
     steps:
       - "aria2c https://go.dev/dl/go1.26.3.linux-amd64.tar.gz || wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz"
       - "tar xzvf go1.26.3.linux-amd64.tar.gz"
