@@ -11,7 +11,7 @@ import (
 
 type ShellConfig struct {
 	Wares      map[string]Ware      `yaml:"wares"`
-	Blueprints map[string]Blueprint `yaml:"blueprint"`
+	Blueprints map[string]Blueprint `yaml:"blueprints"`
 }
 
 func LoadShellConfig(dir string) (*ShellConfig, error) {

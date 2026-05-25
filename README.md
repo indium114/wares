@@ -10,6 +10,15 @@
 
 To install, just grab the binary for your operating system from the **Releases** section on the right.
 
+<details>
+<summary>Or, compile wares from Source</summary>
+Alternatively, you can build wares from *source*.
+
+To do this, you'll need a copy of **go** installed on your system. I'd recommend using *Nix* to get a temporary shell with Go installed.
+
+Then, simply clone this repo (https://github.com/indium114/wares), cd into it, and run **go build**
+</details>
+
 ### Setting up wares
 
 Run the following to check that everything is in order:

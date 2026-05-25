@@ -1,0 +1,17 @@
+wares:
+  just:
+    repo: casey/just
+    version: 1.51.0
+    asset: just-1.51.0-x86_64-unknown-linux-musl.tar.gz
+    digest: sha256:c8f085ca3e885723c341d06243fc291b5abfdc8bbe3b2c076b117de490387b59
+    system: false
+blueprints:
+  go:
+    repo: https://codeberg.org/indium114/blank-repo
+    commit: 3752c083ee286573af01ccae083ea90a9e585384
+    builtcommit: 3752c083ee286573af01ccae083ea90a9e585384
+    artifacts:
+    - go/bin/go
+    - go/bin/gofmt
+    system: false
+managers: {}

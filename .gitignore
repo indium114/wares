@@ -3,3 +3,4 @@
 /wares
 # Added by goreleaser init:
 dist/
+/.wares
