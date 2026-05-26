@@ -11,7 +11,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var shellUpdate bool
+var (
+	shellUpdate bool
+	shellClean  bool
+)
 
 var shellCmd = &cobra.Command{
 	Use:   "shell [dir]",
@@ -37,7 +40,7 @@ var shellCmd = &cobra.Command{
 			}
 		}
 
-		if err := internal.ShellSync(absDir); err != nil {
+		if err := internal.ShellSync(absDir, shellClean); err != nil {
 			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
 			return err
 		}
@@ -76,4 +79,5 @@ var shellCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(shellCmd)
 	shellCmd.Flags().BoolVar(&shellUpdate, "update", false, "Update wares.lock before entering the shell")
+	shellCmd.Flags().BoolVar(&shellClean, "clean", false, "Rebuild all blueprints from scratch")
 }

@@ -105,7 +105,7 @@ func UninstallOrphans() error {
 	return nil
 }
 
-func Sync() error {
+func Sync(clean bool) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
@@ -225,7 +225,7 @@ func Sync() error {
 	}
 
 	// Sync blueprints
-	bpChanged, err := SyncBlueprints(cfg, lock)
+	bpChanged, err := SyncBlueprints(cfg, lock, clean)
 	if err != nil {
 		return err
 	}

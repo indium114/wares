@@ -178,7 +178,7 @@ func uninstallBlueprintOrphans(cfg *Config, lock *Lockfile) (bool, error) {
 	return changed, nil
 }
 
-func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
+func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 	changed := false
 
 	if lock.Blueprints == nil {
@@ -202,7 +202,7 @@ func SyncBlueprints(cfg *Config, lock *Lockfile) (bool, error) {
 
 		// don't unnecessarily rebuild
 		locked := lock.Blueprints[name]
-		needRebuild := locked.BuiltCommit != commit || locked.Repo != bp.Repo
+		needRebuild := locked.BuiltCommit != commit || locked.Repo != bp.Repo || clean
 		if !needRebuild {
 			continue
 		}

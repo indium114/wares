@@ -233,7 +233,7 @@ func ShellUpdate(dir string) error {
 	return nil
 }
 
-func ShellSync(dir string) error {
+func ShellSync(dir string, clean bool) error {
 	absDir, err := filepath.Abs(dir)
 	if err != nil {
 		return err
@@ -339,7 +339,8 @@ func ShellSync(dir string) error {
 			return fmt.Errorf("%s %s not locked yet, run 'wares shell --update' first", ErrText, name)
 		}
 
-		needRebuild := locked.BuiltCommit != locked.Commit || locked.Repo != bp.Repo
+		needRebuild := locked.BuiltCommit != locked.Commit || locked.Repo != bp.Repo || clean
+
 		if needRebuild {
 			if err := buildBlueprint(repoDir, locked.Commit, bp.Steps); err != nil {
 				return err
