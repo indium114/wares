@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var clean bool
+
 var syncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync installed packages with config",
@@ -22,7 +24,7 @@ var syncCmd = &cobra.Command{
 			fmt.Printf("%s Git tree dirty (remember to commit your changes)\n", internal.WarnText)
 		}
 
-		err = internal.Sync()
+		err = internal.Sync(clean)
 		if err != nil {
 			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
 		}
@@ -66,4 +68,5 @@ var syncCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(syncCmd)
+	syncCmd.Flags().BoolVar(&clean, "clean", false, "Rebuild all blueprints from scratch")
 }
