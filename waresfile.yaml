@@ -8,6 +8,8 @@ blueprints:
   go:
     repo: "https://codeberg.org/indium114/blank-repo"
     steps:
+      - "git clean -f"
+      - "rm -r go || true"
       - "aria2c https://go.dev/dl/go1.26.3.linux-amd64.tar.gz || wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz"
       - "tar xzvf go1.26.3.linux-amd64.tar.gz"
     artifacts:
