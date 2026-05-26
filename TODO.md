@@ -53,13 +53,13 @@
 
 ## Needed for 0.8.1
 
-- [ ] Set `$WARES_SHELL_ACTIVE` variable upon entering wares shell, and unset when leaving shell
+- [x] Set `$WARES_SHELL_ACTIVE` variable upon entering wares shell, and unset when leaving shell
 
 ## Not needed currently
 
 - [ ] Explore configuring in `pkl` rather than `yaml`
 - [ ] Explore configuring in `kdl` rather than `yaml`
 - [x] Logo
-- [ ] Explore support for downloading artifacts from *codeberg* releases
+- [x] Explore support for downloading artifacts from *codeberg* releases
 - [ ] Allow installling from a static URL
 	- Suggested by @ecficies in issue #18
