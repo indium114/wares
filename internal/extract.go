@@ -10,6 +10,8 @@ func IsArchive(name string) (bool, string) {
 		return true, "gz"
 	} else if strings.HasSuffix(name, ".zip") {
 		return true, "zip"
+	} else if strings.HasSuffix(name, ".bz2") {
+		return true, "bz2"
 	}
 
 	return false, ""
@@ -18,7 +20,7 @@ func IsArchive(name string) (bool, string) {
 func Extract(archive, dir, kind string, removeTopLevel bool) error {
 	var removeTopLevelArg string
 	if removeTopLevel {
-		if kind == "gz" {
+		if kind == "gz" || kind == "bz2" {
 			removeTopLevelArg = "--strip-components=1"
 		} else {
 			removeTopLevelArg = "-j"
