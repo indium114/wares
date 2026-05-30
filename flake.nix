@@ -24,16 +24,16 @@
           ];
         };
 
-        packages.wares = pkgs.buildGoModule {
+        packages.wares = pkgs.buildGoModule rec {
           pname = "wares";
-          version = "0.8.3";
+          version = "0.8.4";
 
           src = self;
 
           vendorHash = "sha256-tRsa4osUQUKQ+QrYJO5kTTT43w8gfnbFbxpd3edkRSE=";
 
           subPackages = [ "." ];
-          ldflags = [ "-s" "-w" "-X 'github.com/indium114/wares/cmd.Version=0.8.3'" ];
+          ldflags = [ "-s" "-w" "-X 'github.com/indium114/wares/cmd.Version=${version}'" ];
 
           meta = with pkgs.lib; {
             description = "A declarative AppImage/binary package manager";
