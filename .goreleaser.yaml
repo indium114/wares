@@ -25,6 +25,9 @@ builds:
     goarch:
       - arm64
       - amd64
+    ldflags:
+      - -s -w
+      - -X github.com/indium114/wares/cmd.Version={{.Version}}
 
 archives:
   - format: binary
