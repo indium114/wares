@@ -30,7 +30,7 @@
 
           src = self;
 
-          vendorHash = "sha256-tRsa4osUQUKQ+QrYJO5kTTT43w8gfnbFbxpd3edkRSE=";
+          vendorHash = "sha256-m5KteI/VNM2/EjzyLmNw/5Amvbwe8g2Bk0JB1D5JwpY=";
 
           subPackages = [ "." ];
           ldflags = [ "-s" "-w" "-X 'github.com/indium114/wares/cmd.Version=${version}'" ];
