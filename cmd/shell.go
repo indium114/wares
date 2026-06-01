@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -29,20 +29,17 @@ var shellCmd = &cobra.Command{
 
 		absDir, err := filepath.Abs(dir)
 		if err != nil {
-			fmt.Printf("%s Failed to resolve absolute directory: %s", internal.ErrText, err)
-			return err
+			return slag.Err("Failed to resolve absolute directory: %s", err)
 		}
 
 		if shellUpdate {
 			if err := internal.ShellUpdate(absDir); err != nil {
-				fmt.Printf("%s Failed to update wares.lock: %s", internal.ErrText, err)
-				return err
+				return slag.Err("Failed to update wares.lock: %s", err)
 			}
 		}
 
 		if err := internal.ShellSync(absDir, shellClean); err != nil {
-			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
-			return err
+			return slag.Err("Failed to sync: %s", err)
 		}
 
 		shellDir := filepath.Join(absDir, ".wares")
@@ -51,7 +48,7 @@ var shellCmd = &cobra.Command{
 			shell = "/bin/sh"
 		}
 
-		fmt.Printf("%s Entering wares shell\n", internal.HintText)
+		slag.Hint("Entering wares shell\n")
 
 		newEnv := os.Environ()
 		for i, e := range newEnv {

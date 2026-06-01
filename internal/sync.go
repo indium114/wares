@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/indium114/slag"
 )
 
 type syncResult struct {
@@ -36,8 +37,7 @@ func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string
 	}
 
 	if len(files) == 0 {
-		fmt.Printf("%s No downloaded artifact in %s\n", ErrText, dir)
-		return "", err
+		return "", slag.Err("No downloaded artifact in %s\n", dir)
 	}
 
 	if len(files) > 1 {
@@ -48,7 +48,7 @@ func ResolveDownloadedPath(repo, version, pattern string, multiple bool) (string
 		if multiple {
 			return filepath.Join(dir, files[0].Name()), nil
 		} else {
-			return "", fmt.Errorf("%s Multiple artifacts found in %s: %v", ErrText, dir, names)
+			return "", slag.Err("Multiple artifacts found in %s: %v", dir, names)
 		}
 	}
 
@@ -82,7 +82,7 @@ func UninstallOrphans() error {
 	orphans := findOrphans()
 
 	for _, name := range orphans {
-		fmt.Printf("%s Removing %s\n", SyncText, name)
+		slag.Sync("Removing %s\n", name)
 
 		l := lock.Wares[name]
 
@@ -121,7 +121,7 @@ func Sync(clean bool) error {
 	var results []syncResult
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s Installing %s\n", SyncText, name)
+		slag.Sync("Installing %s\n", name)
 
 		l, ok := lock.Wares[name]
 
@@ -131,12 +131,12 @@ func Sync(clean bool) error {
 			if w.Host == "" || w.Host == "https://github.com" {
 				rel, err = GetLatest(w.Repo)
 				if err != nil {
-					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+					return slag.Err("%s: latest release: %w", name, err)
 				}
 			} else {
 				rel, err = GiteaGetLatest(w.Host, w.Repo)
 				if err != nil {
-					return fmt.Errorf("%s %s: latest release: %w", ErrText, name, err)
+					return slag.Err("%s: latest release: %w", name, err)
 				}
 			}
 
@@ -164,13 +164,13 @@ func Sync(clean bool) error {
 		// Resolve installed file path
 		path, err := ResolveDownloadedPath(w.Repo, l.Version, w.Asset, w.Multiple)
 		if err != nil {
-			return fmt.Errorf("%s: resolve path: %w", name, err)
+			return slag.Err("%s: resolve path: %w", name, err)
 		}
 
 		// Compute digest
 		digest, err := ComputeDigest(path)
 		if err != nil {
-			return fmt.Errorf("%s: digest: %w", name, err)
+			return slag.Err("%s: digest: %w", name, err)
 		}
 
 		// Lock or verify
@@ -182,7 +182,7 @@ func Sync(clean bool) error {
 		} else {
 			expected := strings.TrimPrefix(l.Digest, "sha256:")
 			if expected != digest {
-				return fmt.Errorf("%s: digest mismatch", name)
+				return slag.Err("%s: digest mismatch", name)
 			}
 		}
 
@@ -220,7 +220,7 @@ func Sync(clean bool) error {
 		}
 
 		if err := LinkWare(r.name, r.repo, r.version, r.linkSource, r.system); err != nil {
-			return fmt.Errorf("%s: link: %w", r.name, err)
+			return slag.Err("%s: link: %w", r.name, err)
 		}
 	}
 

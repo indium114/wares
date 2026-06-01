@@ -1,18 +1,18 @@
 package internal
 
-import "fmt"
+import "github.com/indium114/slag"
 
 func QueryWare(lock *Lockfile, name string) error {
 	w, ok := lock.Wares[name]
 	if !ok {
-		return fmt.Errorf("%s ware %s not found in lockfile", ErrText, name)
+		return slag.Err("ware %s not found in lockfile", name)
 	}
 
-	fmt.Printf("%s ware %s\n", QueryText, name)
-	fmt.Printf("%s  repo    : %s\n", QueryText, w.Repo)
-	fmt.Printf("%s  version : %s\n", QueryText, w.Version)
-	fmt.Printf("%s  digest  : %s\n", QueryText, w.Digest)
-	fmt.Printf("%s  system  : %t\n", QueryText, w.System)
+	slag.Query("ware %s\n", name)
+	slag.Query(" repo    : %s\n", w.Repo)
+	slag.Query(" version : %s\n", w.Version)
+	slag.Query(" digest  : %s\n", w.Digest)
+	slag.Query(" system  : %t\n", w.System)
 
 	return nil
 }
@@ -20,13 +20,13 @@ func QueryWare(lock *Lockfile, name string) error {
 func QueryBlueprint(lock *Lockfile, name string) error {
 	w, ok := lock.Blueprints[name]
 	if !ok {
-		return fmt.Errorf("%s blueprint %s not found in lockfile", ErrText, name)
+		return slag.Err("blueprint %s not found in lockfile", name)
 	}
 
-	fmt.Printf("%s blueprint %s\n", QueryText, name)
-	fmt.Printf("%s  repo   : %s\n", QueryText, w.Repo)
-	fmt.Printf("%s  commit : %s\n", QueryText, w.BuiltCommit)
-	fmt.Printf("%s  system : %t\n", QueryText, w.System)
+	slag.Query("blueprint %s\n", name)
+	slag.Query(" repo   : %s\n", w.Repo)
+	slag.Query(" commit : %s\n", w.BuiltCommit)
+	slag.Query(" system : %t\n", w.System)
 
 	return nil
 }

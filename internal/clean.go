@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/indium114/slag"
 )
 
 func CleanDir(repo, version string) error {
@@ -64,7 +65,7 @@ func cleanWareVersions(repo, keepVersion string) error {
 			continue
 		}
 
-		fmt.Printf("%s Cleaning %s %s\n", CleanText, parts[1], version)
+		slag.Clean("Cleaning %s %s\n", parts[1], version)
 		err := CleanDir(repo, version)
 		if err != nil {
 			return err

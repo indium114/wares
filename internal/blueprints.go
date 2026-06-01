@@ -1,11 +1,12 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/indium114/slag"
 )
 
 func ensureBlueprintRepo(repo string) (string, error) {
@@ -14,7 +15,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 
 	lastSlash := strings.LastIndex(repo, "/")
 	if lastSlash == -1 {
-		return "", fmt.Errorf("%s Invalid repo format %s", ErrText, repo)
+		return "", slag.Err("Invalid repo format %s", repo)
 	}
 	beforeSlash := strings.TrimPrefix(repo[:lastSlash], "https://")
 	afterSlash := repo[lastSlash+1:]
@@ -42,7 +43,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 		cmd.Stderr = os.Stderr
 		cmd.Run()
 
-		fmt.Printf("%s Pulling %s\n", HintText, repo)
+		slag.Hint("Pulling %s\n", repo)
 		cmd = exec.Command("git", "-C", dir, "pull", "origin")
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -54,7 +55,7 @@ func ensureBlueprintRepo(repo string) (string, error) {
 
 	// clone if it doesn't exist
 	os.MkdirAll(filepath.Dir(dir), 0o755)
-	fmt.Printf("%s Cloning %s\n", HintText, repo)
+	slag.Hint("Cloning %s\n", repo)
 	cmd := exec.Command("git", "clone", repo, dir)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -84,7 +85,7 @@ func buildBlueprint(repoDir, commit string, steps []string) error {
 
 	// build the project according to steps
 	for _, step := range steps {
-		fmt.Printf("%s Build step: %s\n", LogText, step)
+		slag.Log("Build step: %s\n", step)
 		cmd := exec.Command("sh", "-c", step)
 		cmd.Dir = repoDir
 		cmd.Stdout = os.Stdout
@@ -107,8 +108,7 @@ func linkBlueprintArtifacts(repoDir string, artifacts []string, system bool) err
 		src := filepath.Join(repoDir, artifact)
 
 		if _, err := os.Stat(src); err != nil {
-			fmt.Printf("%s Artifact %s not found\n", ErrText, artifact)
-			return err
+			return slag.Err("Artifact %s not found\n", artifact)
 		}
 
 		linkPath := filepath.Join(waresDir, filepath.Base(artifact))
@@ -140,7 +140,7 @@ func uninstallBlueprintOrphans(cfg *Config, lock *Lockfile) (bool, error) {
 	changed := false
 
 	for _, name := range orphans {
-		fmt.Printf("%s Removing %s\n", SyncText, name)
+		slag.Sync("Removing %s\n", name)
 
 		locked := lock.Blueprints[name]
 
@@ -186,7 +186,7 @@ func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 	}
 
 	for name, bp := range cfg.Blueprints {
-		fmt.Printf("%s Building %s\n", SyncText, name)
+		slag.Sync("Building %s\n", name)
 
 		// clone
 		repoDir, err := ensureBlueprintRepo(bp.Repo)

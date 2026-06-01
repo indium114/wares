@@ -1,9 +1,10 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/indium114/slag"
 )
 
 func findManagerOrphans(cfg *Config, lock *Lockfile) map[string][]string {
@@ -49,13 +50,13 @@ func uninstallManagerOrphans(cfg *Config, lock *Lockfile) (bool, error) {
 		// check that manager is configured
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
-			fmt.Printf("%s No settings for manager %s, skipping removal\n", WarnText, managerName)
+			slag.Warn("No settings for manager %s, skipping removal\n", managerName)
 			continue
 		}
 
 		// remove the pkg
 		for _, pkg := range pkgs {
-			fmt.Printf("%s Removing %s/%s\n", SyncText, managerName, pkg)
+			slag.Sync("Removing %s/%s\n", managerName, pkg)
 			if err := runManagerCommand(settings.Remove, pkg); err != nil {
 				return false, err
 			}
@@ -87,7 +88,7 @@ func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
 	for managerName, pkgs := range cfg.Managers {
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
-			fmt.Printf("%s No settings for manager %s, skipping\n", WarnText, managerName)
+			slag.Warn("No settings for manager %s, skipping\n", managerName)
 			continue
 		}
 
@@ -105,7 +106,7 @@ func SyncManagers(cfg *Config, lock *Lockfile) (bool, error) {
 				continue
 			}
 
-			fmt.Printf("%s Installing %s/%s\n", SyncText, managerName, pkg)
+			slag.Sync("Installing %s/%s\n", managerName, pkg)
 			if err := runManagerCommand(settings.Install, pkg); err != nil {
 				return false, err
 			}
@@ -138,15 +139,15 @@ func UpdateManagers(cfg *Config, lock *Lockfile) error {
 	for managerName := range lock.Managers {
 		settings, exists := cfg.Settings.Managers[managerName]
 		if !exists {
-			fmt.Printf("%s No settings for manager %s, skipping\n", WarnText, managerName)
+			slag.Warn("No settings for manager %s, skipping\n", managerName)
 			continue
 		}
 		if settings.Update == "" {
-			fmt.Printf("%s No update command for manager %s, skipping\n", WarnText, managerName)
+			slag.Warn("%s No update command for manager %s, skipping\n", managerName)
 			continue
 		}
 
-		fmt.Printf("%s %s\n", UpdateText, managerName)
+		slag.Update("%s\n", managerName)
 		if err := runManagerCommand(settings.Update, ""); err != nil {
 			return err
 		}

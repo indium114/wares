@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/indium114/slag"
 )
 
 func removeLink(name string, system bool) error {
@@ -30,7 +32,7 @@ func Update() error {
 	}
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
+		slag.Update("%s %s -> ", name, lock.Wares[name].Version)
 
 		var latest string
 		if w.Host == "" || w.Host == "https://github.com" {
@@ -62,7 +64,7 @@ func Update() error {
 	}
 
 	for name, bp := range cfg.Blueprints {
-		fmt.Printf("%s %s\n", UpdateText, name)
+		slag.Update("%s\n", name)
 
 		// pull latest
 		repoDir, err := ensureBlueprintRepo(bp.Repo)
