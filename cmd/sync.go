@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -21,15 +22,15 @@ var syncCmd = &cobra.Command{
 		command := exec.Command("git", "-C", configDir, "status", "--porcelain")
 		out, err := command.Output()
 		if string(out) != "" && string(out) != "fatal: not a git repository (or any of the parent directories): .git" {
-			fmt.Printf("%s Git tree dirty (remember to commit your changes)\n", internal.WarnText)
+			slag.Warn("Git tree dirty (remember to commit your changes)\n")
 		}
 
 		err = internal.Sync(clean)
 		if err != nil {
-			fmt.Printf("%s Failed to sync: %s", internal.ErrText, err)
+			fmt.Print(slag.Err("Failed to sync: %s", err).Error())
 		}
 
-		fmt.Printf("%s Marking all files in ~/Wares as executable\n", internal.LogText)
+		slag.Log("Marking all files in ~/Wares as executable\n")
 		err = filepath.Walk(os.ExpandEnv("$HOME/Wares"), func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -43,7 +44,7 @@ var syncCmd = &cobra.Command{
 			return nil
 		})
 
-		fmt.Printf("%s Marking all files in /Wares as executable\n", internal.LogText)
+		slag.Log("Marking all files in /Wares as executable\n")
 		err = filepath.Walk("/Wares", func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -58,8 +59,7 @@ var syncCmd = &cobra.Command{
 		})
 
 		if err != nil {
-			fmt.Printf("%s Failed to mark files as executable: %s", internal.ErrText, err)
-			return err
+			return slag.Err("Failed to mark files as executable: %s", err)
 		}
 
 		return nil

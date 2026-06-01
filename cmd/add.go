@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -14,7 +15,7 @@ var addCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		pkgName := args[0]
 
-		fmt.Printf("%s Adding ware %s from warehouse to config\n", internal.AddText, pkgName)
+		slag.Add("Adding ware %s from warehouse to config\n", pkgName)
 
 		cfg, err := internal.LoadConfig()
 		if err != nil {
@@ -23,31 +24,27 @@ var addCmd = &cobra.Command{
 
 		// check that platform and arch settings are set
 		if cfg.Settings.Platform == "" {
-			fmt.Printf("%s settings:platform not set in config.yaml (must be 'linux' or 'darwin')\n", internal.ErrText)
-			return nil
+			return slag.Err("settings:platform not set in config.yaml (must be 'linux' or 'darwin')\n")
 		}
 
 		if cfg.Settings.Arch == "" {
-			fmt.Printf("%s settings:arch not set in config.yaml (must be 'x86_64' or 'aarch64')\n", internal.ErrText)
-			return nil
+			return slag.Err("settings:arch not set in config.yaml (must be 'x86_64' or 'aarch64')\n")
 		}
 
 		// validate platform and arch settings
 		validPlatforms := map[string]bool{"linux": true, "darwin": true}
 		if !validPlatforms[cfg.Settings.Platform] {
-			fmt.Printf("%s Invalid platform %q (must be 'linux' or 'darwin')\n", internal.ErrText, cfg.Settings.Platform)
-			return nil
+			return slag.Err("Invalid platform %q (must be 'linux' or 'darwin')\n", cfg.Settings.Platform)
 		}
 
 		validArches := map[string]bool{"x86_64": true, "aarch64": true}
 		if !validArches[cfg.Settings.Arch] {
-			fmt.Printf("%s Invalid platform %q (must be 'x86_64' or 'aarch64')\n", internal.ErrText, cfg.Settings.Arch)
-			return nil
+			return slag.Err("Invalid platform %q (must be 'x86_64' or 'aarch64')\n", cfg.Settings.Arch)
 		}
 
 		// skip if user has already configured package
 		if _, exists := cfg.Wares[pkgName]; exists {
-			fmt.Printf("%s ware %q is already in config, skipping\n", internal.WarnText, pkgName)
+			slag.Warn("%s ware %q is already in config, skipping\n", pkgName)
 			return nil
 		}
 
@@ -55,11 +52,11 @@ var addCmd = &cobra.Command{
 		ware, err := internal.FetchFromWarehouse(cfg.Settings.Platform, cfg.Settings.Arch, pkgName)
 		if err != nil {
 			if err.Error() == fmt.Sprintf("%s ware %q not found in warehouse", internal.ErrText, pkgName) {
-				fmt.Printf("%s ware %q not found in the warehouse\n", internal.ErrText, pkgName)
-				fmt.Printf("%s You can contribute a package configuration at https://github.com/wares-pkg/warehouse\n", internal.HintText)
+				slag.Err("ware %q not found in the warehouse\n", pkgName)
+				slag.Hint("You can contribute a package configuration at https://github.com/wares-pkg/warehouse\n")
 				return nil
 			}
-			return fmt.Errorf("%s %w", internal.ErrText, err)
+			return slag.Err("%w", err)
 		}
 
 		// add the ware to the config

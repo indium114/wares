@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"os"
 
 	"github.com/charmbracelet/fang"
@@ -16,7 +18,9 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	err := fang.Execute(context.Background(), rootCmd, fang.WithVersion(Version))
+	err := fang.Execute(context.Background(), rootCmd, fang.WithVersion(Version), fang.WithErrorHandler(func(w io.Writer, _ fang.Styles, err error) {
+		fmt.Fprintln(w, err.Error())
+	}))
 	if err != nil {
 		os.Exit(1)
 	}

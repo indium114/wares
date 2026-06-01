@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/goccy/go-yaml"
+	"github.com/indium114/slag"
 )
 
 type ShellConfig struct {
@@ -20,7 +21,7 @@ func LoadShellConfig(dir string) (*ShellConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, fmt.Errorf("%s waresfile.yaml not found in %s", ErrText, dir)
+			return nil, slag.Err("waresfile.yaml not found in %s", dir)
 		}
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func shellSymlinkBlueprint(artifact, repoDir string, shellDir string) error {
 	src := filepath.Join(repoDir, artifact)
 
 	if _, err := os.Stat(src); err != nil {
-		return fmt.Errorf("%s artifact %s not found", ErrText, artifact)
+		return slag.Err("artifact %s not found", artifact)
 	}
 
 	if err := os.MkdirAll(shellDir, 0o755); err != nil {
@@ -167,7 +168,7 @@ func ShellUpdate(dir string) error {
 	changed := false
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s %s %s -> ", UpdateText, name, lock.Wares[name].Version)
+		slag.Update("%s %s -> ", name, lock.Wares[name].Version)
 
 		l, ok := lock.Wares[name]
 		if !ok {
@@ -202,7 +203,7 @@ func ShellUpdate(dir string) error {
 	}
 
 	for name, bp := range cfg.Blueprints {
-		fmt.Printf("%s %s\n", UpdateText, name)
+		slag.Update("%s\n", name)
 
 		repoDir, err := ensureBlueprintRepo(bp.Repo)
 		if err != nil {
@@ -255,11 +256,11 @@ func ShellSync(dir string, clean bool) error {
 	var results []syncResult
 
 	for name, w := range cfg.Wares {
-		fmt.Printf("%s Installing %s\n", SyncText, name)
+		slag.Sync("Installing %s\n", name)
 
 		l, ok := lock.Wares[name]
 		if !ok || l.Version == "" {
-			return fmt.Errorf("%s %s not locked yet, run 'wares shell --update' first", ErrText, name)
+			return slag.Err("%s not locked yet, run 'wares shell --update' first", name)
 		}
 
 		if err := CleanDir(w.Repo, l.Version); err != nil {
@@ -288,7 +289,7 @@ func ShellSync(dir string, clean bool) error {
 		} else {
 			expected := strings.TrimPrefix(l.Digest, "sha256:")
 			if expected != digest {
-				return fmt.Errorf("%s digest mismatch", name)
+				return slag.Err("%s digest mismatch", name)
 			}
 		}
 
@@ -327,7 +328,7 @@ func ShellSync(dir string, clean bool) error {
 	}
 
 	for name, bp := range cfg.Blueprints {
-		fmt.Printf("%s Building %s\n", SyncText, name)
+		slag.Sync("Building %s\n", name)
 
 		repoDir, err := ensureBlueprintRepo(bp.Repo)
 		if err != nil {
@@ -336,7 +337,7 @@ func ShellSync(dir string, clean bool) error {
 
 		locked, ok := lock.Blueprints[name]
 		if !ok || locked.Commit == "" {
-			return fmt.Errorf("%s %s not locked yet, run 'wares shell --update' first", ErrText, name)
+			return slag.Err("%s not locked yet, run 'wares shell --update' first", name)
 		}
 
 		needRebuild := locked.BuiltCommit != locked.Commit || locked.Repo != bp.Repo || clean
@@ -362,7 +363,7 @@ func ShellSync(dir string, clean bool) error {
 		}
 	}
 
-	fmt.Printf("%s Marking all files in %s as executable\n", LogText, shellDir)
+	slag.Log("Marking all files in %s as executable\n", shellDir)
 	filepath.Walk(shellDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil

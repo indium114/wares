@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -16,29 +15,31 @@ var queryCmd = &cobra.Command{
 	Use:   "query",
 	Short: "Query information about an installed ware or blueprint",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		name := args[0]
 
 		if queryWare && queryBlueprint {
-			fmt.Printf("%s Only one of --ware or --blueprint may be specified\n", internal.ErrText)
+			return slag.Err("Only one of --ware or --blueprint may be specified\n")
 		}
 
 		lock, err := internal.LoadLock()
 		if err != nil {
-			fmt.Printf("%s Error loading lockfile: %s\n", internal.ErrText, err)
+			return slag.Err("Error loading lockfile: %s\n", err)
 		}
 
 		if queryBlueprint {
 			err := internal.QueryBlueprint(lock, name)
 			if err != nil {
-				fmt.Printf("%s Error querying blueprint: %s\n", internal.ErrText, err)
+				return slag.Err("Error querying blueprint: %s\n", err)
 			}
 		} else {
 			err := internal.QueryWare(lock, name)
 			if err != nil {
-				fmt.Printf("%s Error querying ware: %s\n", internal.ErrText, err)
+				return slag.Err("Error querying ware: %s\n", err)
 			}
 		}
+
+		return nil
 	},
 }
 

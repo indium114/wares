@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -68,70 +69,65 @@ var doctorCmd = &cobra.Command{
 
 		waresBin := filepath.Join(home, "Wares")
 		if _, err := os.Stat(waresBin); os.IsNotExist(err) {
-			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, waresBin)
+			slag.Warn("%s does not exist, creating\n", waresBin)
 		}
 		err = os.MkdirAll(waresBin, 0o755)
 		if err != nil {
-			fmt.Printf("%s Failed to create wares bin dir: %s\n", internal.ErrText, err)
-			return err
+			fmt.Print(slag.Err("Failed to create wares bin dir: %s\n", err).Error())
 		}
 		sysWaresBin := "/Wares"
 		if _, err := os.Stat(sysWaresBin); os.IsNotExist(err) {
-			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, sysWaresBin)
+			slag.Warn("%s does not exist, creating\n", sysWaresBin)
 		}
 		err = internal.Sudo("mkdir", "-p", "/Wares")
 		if err != nil {
-			fmt.Printf("%s Failed to create system wares bin dir: %s\n", internal.ErrText, err)
-			return err
+			fmt.Print(slag.Err("Failed to create system wares bin dir: %s\n", err).Error())
 		}
 		err = internal.Sudo("chown", os.Getenv("USER"), "/Wares")
 		if err != nil {
-			fmt.Printf("%s Failed to chown system wares bin dir: %s\n", internal.ErrText, err)
-			return err
+			fmt.Print(slag.Err("%s Failed to chown system wares bin dir: %s\n", internal.ErrText, err).Error())
 		}
-		fmt.Printf("%s %s exists\n", internal.OkText, sysWaresBin)
+		slag.Ok("%s exists\n", sysWaresBin)
 
 		path := os.Getenv("PATH")
 		if !strings.Contains(path, waresBin) {
-			fmt.Printf("%s %s not in PATH\n", internal.ErrText, waresBin)
-			return err
+			fmt.Print(slag.Err("%s not in PATH\n", waresBin).Error())
 		}
-		fmt.Printf("%s %s is in PATH\n", internal.OkText, waresBin)
+		slag.Ok("%s is in PATH\n", waresBin)
 		if !strings.Contains(path, sysWaresBin) {
-			fmt.Printf("%s %s not in PATH\n", internal.ErrText, sysWaresBin)
-			return err
+			fmt.Print(slag.Err("%s not in PATH\n", sysWaresBin).Error())
 		}
-		fmt.Printf("%s %s is in PATH\n", internal.OkText, sysWaresBin)
+		slag.Ok("%s is in PATH\n", sysWaresBin)
 
 		// MARK: Check for Wares config directory
 		waresConfig, _ := internal.ConfigDir()
 		if _, err := os.Stat(waresConfig); os.IsNotExist(err) {
-			fmt.Printf("%s %s does not exist, creating\n", internal.WarnText, waresConfig)
+			slag.Warn("%s does not exist, creating\n", waresConfig)
 		}
 		err = os.MkdirAll(waresConfig, 0o755)
 		if err != nil {
-			fmt.Printf("%s Failed to create wares config dir: %s\n", internal.ErrText, err)
+			fmt.Print(slag.Err("Failed to create wares config dir: %s\n", err).Error())
 		}
-		fmt.Printf("%s %s exists\n", internal.OkText, waresConfig)
+		slag.Ok("%s exists\n", waresConfig)
 
 		// MARK: Check for authenticated gh CLI
 		if status := checkGhCli(); status == true {
-			fmt.Printf("%s Logged into GitHub CLI\n", internal.OkText)
+			slag.Ok("Logged into GitHub CLI\n")
 		} else {
-			fmt.Printf("%s Not logged into GitHub CLI\n", internal.ErrText)
+			fmt.Print(slag.Err("Not logged into GitHub CLI\n").Error())
 		}
 
 		// MARK: Check for tar and unzip commands
 		if checkCommandExists("tar") {
-			fmt.Printf("%s tar command found\n", internal.OkText)
+			slag.Ok("tar command found\n")
 		} else {
-			fmt.Printf("%s tar command not found\n", internal.ErrText)
+			fmt.Print(slag.Err("tar command not found\n").Error())
 		}
 
 		if checkCommandExists("unzip") {
-			fmt.Printf("%s unzip command found\n", internal.OkText)
+			slag.Ok("unzip command found\n")
 		} else {
-			fmt.Printf("%s unzip command not found\n", internal.ErrText)
+			fmt.Print(slag.Err("unzip command not found\n").Error())
 		}
 
 		return nil
