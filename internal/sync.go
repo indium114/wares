@@ -121,9 +121,13 @@ func Sync(clean bool) error {
 	var results []syncResult
 
 	for name, w := range cfg.Wares {
-		slag.Sync("Installing %s\n", name)
-
 		l, ok := lock.Wares[name]
+
+		if ok && l.Digest != "" && !clean {
+			continue
+		}
+
+		slag.Sync("Installing %s\n", name)
 
 		// Missing lock entry → resolve latest
 		if !ok || l.Version == "" {
