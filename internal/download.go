@@ -76,7 +76,6 @@ func GetReleases(repo string) ([]Release, error) {
 
 func GiteaGetLatest(host, repo string) (string, error) {
 	url := fmt.Sprintf("%s/api/v1/repos/%s/releases/latest", host, repo)
-	fmt.Println(url)
 	response, err := http.Get(url)
 	if err != nil {
 		return "", err

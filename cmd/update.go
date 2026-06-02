@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/indium114/slag"
 	"github.com/indium114/wares/internal"
 	"github.com/spf13/cobra"
 )
@@ -14,8 +13,7 @@ var updateCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		err := internal.Update()
 		if err != nil {
-			fmt.Println("%s Failed to update: %s", internal.ErrText, err)
-			return err
+			return slag.Err("Failed to update: %s", err)
 		}
 
 		return nil
