@@ -143,7 +143,7 @@ func UpdateManagers(cfg *Config, lock *Lockfile) error {
 			continue
 		}
 		if settings.Update == "" {
-			slag.Warn("%s No update command for manager %s, skipping\n", managerName)
+			slag.Warn("No update command for manager %s, skipping\n", managerName)
 			continue
 		}
 
