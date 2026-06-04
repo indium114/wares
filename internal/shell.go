@@ -15,6 +15,12 @@ type ShellConfig struct {
 	Blueprints map[string]Blueprint `yaml:"blueprints"`
 }
 
+func shellStoreBase(absDir string) string {
+	home, _ := os.UserHomeDir()
+	rel := strings.TrimPrefix(absDir, "/")
+	return filepath.Join(home, ".local", "share", "wares", "_shells", rel)
+}
+
 func LoadShellConfig(dir string) (*ShellConfig, error) {
 	path := filepath.Join(dir, "waresfile.yaml")
 
@@ -239,6 +245,10 @@ func ShellSync(dir string, clean bool) error {
 	if err != nil {
 		return err
 	}
+
+	oldHome := os.Getenv("WARES_HOME")
+	os.Setenv("WARES_HOME", shellStoreBase(absDir))
+	defer os.Setenv("WARES_HOME", oldHome)
 
 	cfg, err := LoadShellConfig(absDir)
 	if err != nil {
