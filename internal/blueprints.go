@@ -11,7 +11,10 @@ import (
 
 func ensureBlueprintRepo(repo string) (string, error) {
 	home, _ := os.UserHomeDir()
-	base := filepath.Join(home, ".local", "share", "wares")
+	base := os.Getenv("WARES_HOME")
+	if base == "" {
+		base = filepath.Join(home, ".local", "share", "wares")
+	}
 
 	lastSlash := strings.LastIndex(repo, "/")
 	if lastSlash == -1 {
