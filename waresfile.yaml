@@ -10,8 +10,8 @@ blueprints:
     steps:
       - "git clean -f"
       - "rm -r go || true"
-      - "aria2c https://go.dev/dl/go1.26.3.linux-amd64.tar.gz || wget https://go.dev/dl/go1.26.3.linux-amd64.tar.gz"
-      - "tar xzvf go1.26.3.linux-amd64.tar.gz"
+      - "aria2c https://go.dev/dl/go1.26.4.linux-amd64.tar.gz || wget https://go.dev/dl/go1.26.4.linux-amd64.tar.gz"
+      - "tar xzvf go1.26.4.linux-amd64.tar.gz"
     artifacts:
       - "go/bin/go"
       - "go/bin/gofmt"
