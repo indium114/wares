@@ -1,3 +1,7 @@
+# 0.8.8
+
+- update to new warehouse url (https://codeberg.org/indium114/warehouse)
+
 # 0.8.7
 
 - move store dir for shells to `~/.local/share/wares/_shells/<path/to/project>`
