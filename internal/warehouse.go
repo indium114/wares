@@ -11,7 +11,7 @@ import (
 
 func FetchFromWarehouse(platform, arch, pkgName string) (*Ware, error) {
 	url := fmt.Sprintf(
-		"https://raw.githubusercontent.com/wares-pkg/warehouse/refs/heads/main/%s/%s/%s.yaml",
+		"https://codeberg.org/indium114/warehouse/raw/branch/main/%s/%s/%s.yaml",
 		platform, arch, pkgName,
 	)
 
