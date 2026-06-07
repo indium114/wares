@@ -53,7 +53,7 @@ var addCmd = &cobra.Command{
 		if err != nil {
 			if err.Error() == fmt.Sprintf("%s ware %q not found in warehouse", internal.ErrText, pkgName) {
 				slag.Err("ware %q not found in the warehouse\n", pkgName)
-				slag.Hint("You can contribute a package configuration at https://github.com/wares-pkg/warehouse\n")
+				slag.Hint("You can contribute a package configuration at https://codeberg.org/indium114/warehouse\n")
 				return nil
 			}
 			return slag.Err("%w", err)
