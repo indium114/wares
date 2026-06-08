@@ -197,21 +197,15 @@ func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 			return false, err
 		}
 
-		// get latest commit
-		commit, err := resolveLatestCommit(repoDir)
-		if err != nil {
-			return false, err
-		}
-
 		// don't unnecessarily rebuild
 		locked := lock.Blueprints[name]
-		needRebuild := locked.BuiltCommit != commit || locked.Repo != bp.Repo || clean
+		needRebuild := locked.BuiltCommit != locked.Commit || locked.Repo != bp.Repo || clean
 		if !needRebuild {
 			continue
 		}
 
 		// build
-		if err := buildBlueprint(repoDir, commit, bp.Steps); err != nil {
+		if err := buildBlueprint(repoDir, locked.Commit, bp.Steps); err != nil {
 			return false, err
 		}
 
@@ -223,8 +217,8 @@ func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 		// lock
 		lock.Blueprints[name] = LockedBlueprint{
 			Repo:        bp.Repo,
-			Commit:      commit,
-			BuiltCommit: commit,
+			Commit:      locked.Commit,
+			BuiltCommit: locked.Commit,
 			Artifacts:   bp.Artifacts,
 			System:      bp.System,
 		}

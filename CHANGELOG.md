@@ -1,3 +1,9 @@
+# 0.8.9
+
+- (fix) respect locked commit when building blueprints
+	- probably the longest-standing bug in *wares* because i didn't notice it until now :P
+	- what happened before was: even if the locked commit for a blueprint was older than the latest one, the `wares sync` command would overwrite the locked commit with the latest one
+
 # 0.8.8
 
 - update to new warehouse url (https://codeberg.org/indium114/warehouse)
