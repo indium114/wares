@@ -204,6 +204,11 @@ func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 			continue
 		}
 
+		// set locked.Commit if it doesn't exist
+		if locked.Commit == "" {
+			locked.Commit, _ = resolveLatestCommit(repoDir)
+		}
+
 		// build
 		if err := buildBlueprint(repoDir, locked.Commit, bp.Steps); err != nil {
 			return false, err
