@@ -1,3 +1,7 @@
+# 0.8.10
+
+- (fix) resolve latest commit if there is no locked commit
+
 # 0.8.9
 
 - (fix) respect locked commit when building blueprints
