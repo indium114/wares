@@ -1,3 +1,7 @@
+# 0.9.0
+
+- add a `wares build` command, which will build the `_self` blueprint defined in `waresfile.yaml` and symlink artifacts to `<project dir>/wares-result`
+
 # 0.8.10
 
 - (fix) resolve latest commit if there is no locked commit
