@@ -4,3 +4,4 @@
 # Added by goreleaser init:
 dist/
 /.wares
+/wares-result
