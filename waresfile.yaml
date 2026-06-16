@@ -5,6 +5,13 @@ wares:
     asset: "just-*-x86_64-unknown-linux-musl.tar.gz"
 
 blueprints:
+  _self:
+    repo: "https://github.com/indium114/wares"
+    steps:
+      - "nix develop --command go build"
+    artifacts:
+      - "wares"
+
   go:
     repo: "https://codeberg.org/indium114/blank-repo"
     steps:
