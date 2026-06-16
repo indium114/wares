@@ -247,3 +247,37 @@ wares shell
 
 > [!NOTE]
 > The first time you enter the shell, you'll need to run `wares shell --update` instead.
+
+#### Building your project with the `_self` blueprint
+
+Inside the `waresfile.yaml` file at the root of your repo, you can specify a `_self` blueprint.
+
+This blueprint defines how *your project* will be built, allowing you to build it with *wares*.
+> this is similar to the `nix build` command
+
+For example, this is the `_self` blueprint for the *wares* Git repo.
+
+```yaml
+blueprints:
+  _self:
+    repo: "https://github.com/indium114/wares"
+    steps:
+      - "nix develop --command go build"
+    artifacts:
+      - "wares"
+```
+
+> [!NOTE]
+> The `repo:` field is ignored, but can't be empty.
+> You should still set it to the URL to your repo, as it may have a use in the future.
+
+Once you have the blueprint written, you can build it with the following:
+
+```shell
+wares build
+```
+
+You can optionally specify a directory (e.g. `wares build /path/to/project`)
+
+After buildijng, the artifacts will be symlinked into `wares-result` at the root of your project.
+> Remember to add `wares-result` to your `.gitignore` file.

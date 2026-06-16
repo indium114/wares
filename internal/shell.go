@@ -338,6 +338,10 @@ func ShellSync(dir string, clean bool) error {
 	}
 
 	for name, bp := range cfg.Blueprints {
+		if name == "_self" {
+			continue
+		}
+
 		slag.Sync("Building %s\n", name)
 
 		repoDir, err := ensureBlueprintRepo(bp.Repo)

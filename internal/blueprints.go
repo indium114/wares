@@ -189,6 +189,10 @@ func SyncBlueprints(cfg *Config, lock *Lockfile, clean bool) (bool, error) {
 	}
 
 	for name, bp := range cfg.Blueprints {
+		if name == "_self" {
+			continue
+		}
+
 		slag.Sync("Building %s\n", name)
 
 		// clone

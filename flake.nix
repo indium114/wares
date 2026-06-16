@@ -26,11 +26,11 @@
 
         packages.wares = pkgs.buildGoModule rec {
           pname = "wares";
-          version = "0.8.10";
+          version = "0.9.0";
 
           src = self;
 
-          vendorHash = "sha256-m5KteI/VNM2/EjzyLmNw/5Amvbwe8g2Bk0JB1D5JwpY=";
+          vendorHash = "sha256-UOXoPG1tSWQRSKglampCfjXdRhqHzDmA3LrvywKC0Z0=";
 
           subPackages = [ "." ];
           ldflags = [ "-s" "-w" "-X 'github.com/indium114/wares/cmd.Version=${version}'" ];
