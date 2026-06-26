@@ -1,3 +1,8 @@
+# 0.9.1
+
+- shallow-clone blueprint repos by default
+	- falls back to full clone if the remote doesn't support shallow cloning
+
 # 0.9.0
 
 - add a `wares build` command, which will build the `_self` blueprint defined in `waresfile.yaml` and symlink artifacts to `<project dir>/wares-result`
