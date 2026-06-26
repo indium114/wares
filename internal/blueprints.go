@@ -59,11 +59,18 @@ func ensureBlueprintRepo(repo string) (string, error) {
 	// clone if it doesn't exist
 	os.MkdirAll(filepath.Dir(dir), 0o755)
 	slag.Hint("Cloning %s\n", repo)
-	cmd := exec.Command("git", "clone", repo, dir)
+	/// attempt shallow clone, fall back to full clone
+	cmd := exec.Command("git", "clone", repo, dir, "--depth=1")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		return "", err
+		slag.Warn("failed to shallow clone %s, attempting full clone\n", repo)
+		fullCmd := exec.Command("git", "clone", repo, dir)
+		fullCmd.Stdout = os.Stdout
+		fullCmd.Stderr = os.Stderr
+		if err := fullCmd.Run(); err != nil {
+			return "", err
+		}
 	}
 	return dir, nil
 }
