@@ -25,7 +25,7 @@
 
 - move store dir for shells to `~/.local/share/wares/_shells/<path/to/project>`
 	- note: you will have to run `wares shell --clean` the first time you enter a shell after this update
-	- for example, the store path for `~/Projects/indium114/wares` will be `~/.local/share/wares/_shells/home/indium114/Projects/wares`
+	- for example, the store path for `/home/indium114/Projects/wares` will be `~/.local/share/wares/_shells/home/indium114/Projects/wares`
 	- this is to provide separation between stores when you use multiple wares shells
 
 # 0.8.6
