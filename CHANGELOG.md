@@ -1,3 +1,10 @@
+# 0.9.2
+
+- (fix) clone to the correct directory when running `wares build`
+	- the previous (incorrect) behaviour was: running `wares build` in `/home/indium114/Projects/wares` would clone to `~/.local/share/wares/_builds/home/indium114/Projects/wares/home/indium114/Projects/wares`. It now (correctly) clones to `~/.local/share/wares/_builds/home/indium114/Projects/wares`
+- `wares clean` now cleans the `_shells` and `_builds` directories in `~/.local/share/wares`
+	- this means you will need to pass the `--clean` argument the next time you run `wares shell` for a given project
+
 # 0.9.1
 
 - shallow-clone blueprint repos by default

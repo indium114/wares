@@ -87,5 +87,14 @@ func Clean() error {
 		}
 	}
 
+	home, _ := os.UserHomeDir()
+	path := filepath.Join(home, ".local", "share", "wares")
+
+	slag.Clean("Removing shells\n")
+	_ = os.RemoveAll(filepath.Join(path, "_shells"))
+
+	slag.Clean("Removing builds\n")
+	_ = os.RemoveAll(filepath.Join(path, "_builds"))
+
 	return nil
 }

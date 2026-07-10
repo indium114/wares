@@ -3,20 +3,15 @@ package internal
 import (
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/indium114/slag"
 )
 
-func buildStoreBase(absDir string) string {
-	home, _ := os.UserHomeDir()
-	rel := strings.TrimPrefix(absDir, "/")
-	return filepath.Join(home, ".local", "share", "wares", "_builds", rel)
-}
-
 func BuildFromWaresfile(dir string) error {
+	home, _ := os.UserHomeDir()
+
 	oldHome := os.Getenv("WARES_HOME")
-	os.Setenv("WARES_HOME", buildStoreBase(dir))
+	os.Setenv("WARES_HOME", filepath.Join(home, ".local", "share", "wares", "_builds"))
 	defer os.Setenv("WARES_HOME", oldHome)
 
 	shellConfig, err := LoadShellConfig(dir)
