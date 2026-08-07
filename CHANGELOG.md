@@ -1,3 +1,7 @@
+# 0.9.3
+
+- when using `wares update`, highlight the new version if it has changed
+
 # 0.9.2
 
 - (fix) clone to the correct directory when running `wares build`
