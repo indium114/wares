@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/indium114/slag"
 )
 
@@ -54,13 +55,16 @@ func Update() error {
 		}
 
 		// update if changes
+		var printedVersion string
+		printedVersion = latest
 		if l.Version != latest {
 			l.Version = latest
 			l.Digest = ""
 			lock.Wares[name] = l
+			printedVersion = color.GreenString(l.Version)
 		}
 
-		fmt.Printf("%s\n", l.Version)
+		fmt.Printf("%s\n", printedVersion)
 	}
 
 	for name, bp := range cfg.Blueprints {
