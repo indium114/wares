@@ -1,14 +1,14 @@
 wares:
   just:
     repo: casey/just
-    version: 1.57.0
-    asset: just-1.57.0-x86_64-unknown-linux-musl.tar.gz
-    digest: sha256:45b548094283cb9739af8f13273b8cddeee869f5b4ef2bb631b1f311cb566155
+    version: 1.58.0
+    asset: just-1.58.0-x86_64-unknown-linux-musl.tar.gz
+    digest: sha256:4a5cc2f53e6f0f8c59092a6cc38291eb729d46a7dd95d3ae582008881b84931d
     system: false
 blueprints:
   _self:
     repo: https://github.com/indium114/wares
-    commit: b6c3e9f38b3b98c808e4815b8cc8090ecf4e0fe2
+    commit: 1bf80fae19bec29d6e66696537ca70e84b6b1ed5
     builtcommit: ""
     artifacts: []
     system: false
