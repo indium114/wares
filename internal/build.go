@@ -43,7 +43,6 @@ func BuildFromWaresfile(dir string) error {
 	}
 
 	for _, artifact := range bp.Artifacts {
-		slag.Log("symlinking artifact %s from repoDir %s to result dir %s", artifact, repoDir, dir+"/wares-result") // DEBUG
 		if err := shellSymlinkBlueprint(artifact, repoDir, dir+"/wares-result"); err != nil {
 			return err
 		}
