@@ -10,6 +10,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/briandowns/spinner"
 )
 
 type Release struct {
@@ -117,6 +120,12 @@ func GetLatest(repo string) (string, error) {
 }
 
 func downloadFile(downloadURL, dir, filename string) error {
+	// Create spinner
+	s := spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+	s.Suffix = fmt.Sprintf(" Downloading %s", filename)
+	s.Color("cyan", "bold")
+	s.Start()
+
 	// Download file
 	response, err := http.Get(downloadURL)
 	if err != nil {
@@ -135,6 +144,7 @@ func downloadFile(downloadURL, dir, filename string) error {
 
 	// copy response body to file
 	_, err = io.Copy(file, response.Body)
+	s.Stop() // stop the spinner
 	if err != nil {
 		return err
 	}
