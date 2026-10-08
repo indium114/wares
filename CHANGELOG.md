@@ -1,3 +1,8 @@
+# 0.9.4
+
+- add a spinner when downloading artifacts from a forgejo instance
+- removes a debug print that was accidentally left in >_>
+
 # 0.9.3
 
 - when using `wares update`, highlight the new version if it has changed
