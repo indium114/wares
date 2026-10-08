@@ -8,7 +8,7 @@ blueprints:
   _self:
     repo: "https://github.com/indium114/wares"
     steps:
-      - "nix develop --command go build"
+      - "go build -v"
     artifacts:
       - "wares"
 
