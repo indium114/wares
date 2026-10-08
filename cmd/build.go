@@ -25,6 +25,10 @@ var buildCmd = &cobra.Command{
 			return slag.Err("failed to resolve absolute directory: %s", err)
 		}
 
+		if err := internal.ShellSync(absDir, true); err != nil {
+			return err
+		}
+
 		if err := internal.BuildFromWaresfile(absDir); err != nil {
 			return err
 		}

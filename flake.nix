@@ -26,7 +26,7 @@
 
         packages.wares = pkgs.buildGoModule rec {
           pname = "wares";
-          version = "0.9.4";
+          version = "0.9.5";
 
           src = self;
 
