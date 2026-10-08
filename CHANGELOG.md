@@ -1,3 +1,8 @@
+# 0.9.5
+
+- use dependencies from `waresfile.yaml` shell when building with `wares build`
+	- means you no longer need the tools installed system-wide to build
+
 # 0.9.4
 
 - add a spinner when downloading artifacts from a forgejo instance
