@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -38,9 +39,15 @@ func BuildFromWaresfile(dir string) error {
 		return err
 	}
 
+	oldPath := os.Getenv("PATH")
+	newPath := fmt.Sprintf("%s%c%s", oldPath, os.PathListSeparator, dir+"/.wares")
+	if err := os.Setenv("PATH", newPath); err != nil {
+		return err
+	}
 	if err := buildBlueprint(repoDir, commit, bp.Steps); err != nil {
 		return err
 	}
+	_ = os.Setenv("PATH", oldPath)
 
 	for _, artifact := range bp.Artifacts {
 		if err := shellSymlinkBlueprint(artifact, repoDir, dir+"/wares-result"); err != nil {
