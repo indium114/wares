@@ -14,6 +14,7 @@ var buildCmd = &cobra.Command{
 	Short: "Build the '_self' blueprint specified in waresfile.yaml",
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		internal.Lock()
 		dir := "."
 
 		if len(args) > 0 {
@@ -22,17 +23,21 @@ var buildCmd = &cobra.Command{
 
 		absDir, err := filepath.Abs(dir)
 		if err != nil {
+			internal.Unlock()
 			return slag.Err("failed to resolve absolute directory: %s", err)
 		}
 
 		if err := internal.ShellSync(absDir, true); err != nil {
+			internal.Unlock()
 			return err
 		}
 
 		if err := internal.BuildFromWaresfile(absDir); err != nil {
+			internal.Unlock()
 			return err
 		}
 
+		internal.Unlock()
 		return nil
 	},
 }

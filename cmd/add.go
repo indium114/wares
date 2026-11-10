@@ -13,38 +13,46 @@ var addCmd = &cobra.Command{
 	Short: "Add a ware configuration from warehouse to config.yaml",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		internal.Lock()
+
 		pkgName := args[0]
 
 		slag.Add("Adding ware %s from warehouse to config\n", pkgName)
 
 		cfg, err := internal.LoadConfig()
 		if err != nil {
+			internal.Unlock()
 			return err
 		}
 
 		// check that platform and arch settings are set
 		if cfg.Settings.Platform == "" {
+			internal.Unlock()
 			return slag.Err("settings:platform not set in config.yaml (must be 'linux' or 'darwin')\n")
 		}
 
 		if cfg.Settings.Arch == "" {
+			internal.Unlock()
 			return slag.Err("settings:arch not set in config.yaml (must be 'x86_64' or 'aarch64')\n")
 		}
 
 		// validate platform and arch settings
 		validPlatforms := map[string]bool{"linux": true, "darwin": true}
 		if !validPlatforms[cfg.Settings.Platform] {
+			internal.Unlock()
 			return slag.Err("Invalid platform %q (must be 'linux' or 'darwin')\n", cfg.Settings.Platform)
 		}
 
 		validArches := map[string]bool{"x86_64": true, "aarch64": true}
 		if !validArches[cfg.Settings.Arch] {
+			internal.Unlock()
 			return slag.Err("Invalid platform %q (must be 'x86_64' or 'aarch64')\n", cfg.Settings.Arch)
 		}
 
 		// skip if user has already configured package
 		if _, exists := cfg.Wares[pkgName]; exists {
 			slag.Warn("%s ware %q is already in config, skipping\n", pkgName)
+			internal.Unlock()
 			return nil
 		}
 
@@ -54,6 +62,7 @@ var addCmd = &cobra.Command{
 			if err.Error() == fmt.Sprintf("%s ware %q not found in warehouse", internal.ErrText, pkgName) {
 				slag.Err("ware %q not found in the warehouse\n", pkgName)
 				slag.Hint("You can contribute a package configuration at https://codeberg.org/indium114/warehouse\n")
+				internal.Unlock()
 				return nil
 			}
 			return slag.Err("%w", err)
@@ -64,9 +73,11 @@ var addCmd = &cobra.Command{
 
 		// save config
 		if err := internal.SaveConfig(cfg); err != nil {
+			internal.Unlock()
 			return err
 		}
 
+		internal.Unlock()
 		return nil
 	},
 }

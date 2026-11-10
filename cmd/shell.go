@@ -21,6 +21,7 @@ var shellCmd = &cobra.Command{
 	Short: "Enter a waresfile.yaml shell",
 	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
+		internal.Lock()
 		dir := "."
 
 		if len(args) > 0 {
@@ -29,16 +30,19 @@ var shellCmd = &cobra.Command{
 
 		absDir, err := filepath.Abs(dir)
 		if err != nil {
+			internal.Unlock()
 			return slag.Err("Failed to resolve absolute directory: %s", err)
 		}
 
 		if shellUpdate {
 			if err := internal.ShellUpdate(absDir); err != nil {
+				internal.Unlock()
 				return slag.Err("Failed to update wares.lock: %s", err)
 			}
 		}
 
 		if err := internal.ShellSync(absDir, shellClean); err != nil {
+			internal.Unlock()
 			return slag.Err("Failed to sync: %s", err)
 		}
 
@@ -65,6 +69,7 @@ var shellCmd = &cobra.Command{
 		sh.Stdout = os.Stdout
 		sh.Stderr = os.Stderr
 
+		internal.Unlock()
 		if err := sh.Run(); err != nil {
 			return err
 		}
