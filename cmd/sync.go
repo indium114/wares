@@ -17,6 +17,7 @@ var syncCmd = &cobra.Command{
 	Use:   "sync",
 	Short: "Sync installed packages with config",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		internal.Lock()
 		// check if config directory is a git repo, and if it has unstaged changes
 		configDir, _ := internal.ConfigDir()
 		command := exec.Command("git", "-C", configDir, "status", "--porcelain")
@@ -59,9 +60,11 @@ var syncCmd = &cobra.Command{
 		})
 
 		if err != nil {
+			internal.Unlock()
 			return slag.Err("Failed to mark files as executable: %s", err)
 		}
 
+		internal.Unlock()
 		return nil
 	},
 }

@@ -9,8 +9,10 @@ var cleanCmd = &cobra.Command{
 	Use:   "clean",
 	Short: "Remove old versions of packages",
 	Run: func(cmd *cobra.Command, args []string) {
+		internal.Lock()
 		internal.UninstallOrphans()
 		internal.Clean()
+		internal.Unlock()
 	},
 }
 

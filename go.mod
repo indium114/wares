@@ -3,15 +3,17 @@ module github.com/indium114/wares
 go 1.26.1
 
 require (
+	github.com/briandowns/spinner v1.23.2
 	github.com/charmbracelet/fang v1.0.0
 	github.com/fatih/color v1.19.0
 	github.com/goccy/go-yaml v1.19.2
+	github.com/gofrs/flock v0.13.2
+	github.com/indium114/slag v0.1.3
 	github.com/spf13/cobra v1.10.2
 )
 
 require (
 	charm.land/lipgloss/v2 v2.0.0-beta.3.0.20251106193318-19329a3e8410 // indirect
-	github.com/briandowns/spinner v1.23.2 // indirect
 	github.com/charmbracelet/colorprofile v0.3.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20251106190538-99ea45596692 // indirect
 	github.com/charmbracelet/x/ansi v0.11.0 // indirect
@@ -23,10 +25,9 @@ require (
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/indium114/slag v0.0.0-20260616100537-7c1211bb1b3c // indirect
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
-	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-colorable v0.1.16 // indirect
+	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/mango v0.1.0 // indirect
@@ -37,7 +38,7 @@ require (
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	golang.org/x/sync v0.17.0 // indirect
-	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 )
