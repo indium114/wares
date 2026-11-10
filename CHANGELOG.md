@@ -1,3 +1,9 @@
+# 0.9.6
+
+- implement a process lockfile (`/var/lock/wares.lock`) so that two instances of wares can't interfere with one another
+	- if a new wares process is started while one is still busy, the second one will wait for the lock to be freed
+	- this prevents, for example, accidentally running `wares clean` while a shell build is taking place
+
 # 0.9.5
 
 - use dependencies from `waresfile.yaml` shell when building with `wares build`
